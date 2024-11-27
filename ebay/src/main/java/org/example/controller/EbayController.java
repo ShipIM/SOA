@@ -1,6 +1,6 @@
 package org.example.controller;
 
-import com.example.service.ProductService;
+import org.example.api.service.ProductService;
 import org.example.dto.coordinates.CoordinatesResponse;
 import org.example.dto.meta.MetaResponse;
 import org.example.dto.meta.PaginationRequest;

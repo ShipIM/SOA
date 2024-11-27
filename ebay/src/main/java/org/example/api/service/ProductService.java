@@ -1,4 +1,4 @@
-package com.example.service;
+package org.example.api.service;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.example.model.entity.Meta;

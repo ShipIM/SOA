@@ -1,8 +1,8 @@
 package org.example.service;
 
-import com.example.service.ProductService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.example.api.gateway.ProductGateway;
+import org.example.api.service.ProductService;
 import org.example.model.entity.Meta;
 import org.example.model.entity.Product;
 
