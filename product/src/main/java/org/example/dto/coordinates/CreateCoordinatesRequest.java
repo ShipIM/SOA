@@ -12,15 +12,15 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class CoordinatesRequest {
+public class CreateCoordinatesRequest {
 
-    @NotNull(message = "X coordinate cannot be null.")
-    @DecimalMin(value = "0.0", message = "X coordinate must be non-negative.")
-    @DecimalMax(value = "39.0", message = "X coordinate must be less than or equal to 39.")
+    @NotNull(message = "x coordinate cannot be null")
+    @DecimalMin(value = "0.0", message = "x coordinate must be non-negative")
+    @DecimalMax(value = "39.0", message = "x coordinate must be less than or equal to 39")
     private Float x;
 
-    @NotNull(message = "Y coordinate cannot be null.")
-    @Max(value = 905, message = "Y coordinate must be less than or equal to 905.")
+    @NotNull(message = "y coordinate cannot be null.")
+    @Max(value = 905, message = "y coordinate must be less than or equal to 905")
     private Integer y;
 
 }

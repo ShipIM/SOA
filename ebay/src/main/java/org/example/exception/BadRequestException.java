@@ -6,8 +6,8 @@ import javax.ws.rs.core.Response;
 
 public class BadRequestException extends ApiException {
 
-    public BadRequestException(String message) {
-        super(Response.Status.BAD_REQUEST.getStatusCode(), message);
+    public BadRequestException() {
+        super(Response.Status.BAD_REQUEST.getStatusCode());
     }
 
 }

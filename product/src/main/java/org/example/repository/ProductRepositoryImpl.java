@@ -84,14 +84,14 @@ public class ProductRepositoryImpl implements ProductRepository {
             sql.append(" ORDER BY ").append(parseSort(sort));
         }
 
-        if (size != null && page != null) {
+        if (size != 0 && page != 0) {
             sql.append(" LIMIT ? OFFSET ?");
         }
 
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(sql.toString())) {
 
-            if (size != null && page != null) {
+            if (size != 0 && page != 0) {
                 statement.setInt(1, size);
                 statement.setInt(2, (page - 1) * size);
             }
@@ -292,7 +292,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void deleteByPrice(double price) throws SQLException {
+    public void deleteByPrice(Integer price) throws SQLException {
         var sql = "DELETE FROM product WHERE price = ?";
 
         try (var connection = dataSource.getConnection();

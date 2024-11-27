@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
 
             return productRepository.create(product);
         } catch (SQLException e) {
-            throw new InternalServerErrorException("error while adding product: " + e.getMessage());
+            throw new InternalServerErrorException();
         }
     }
 
@@ -50,24 +50,29 @@ public class ProductServiceImpl implements ProductService {
             var products = productRepository.findAll(page, size, sort, filter);
             for (var product : products) {
                 var coordinates = coordinatesRepository.getById(product.getCoordinates().getId())
-                        .orElseThrow(() -> new NotFoundException("coordinates not found for ID: " + product.getCoordinates().getId()));
+                        .orElseThrow(NotFoundException::new);
                 product.setCoordinates(coordinates);
 
                 var person = personRepository.getById(product.getOwner().getId())
-                        .orElseThrow(() -> new NotFoundException("person not found for ID: " + product.getOwner().getId()));
+                        .orElseThrow(NotFoundException::new);
                 product.setOwner(person);
             }
 
             var totalItems = productRepository.countAll(filter);
-            var totalPages = size == null ? null : (int) Math.ceil((double) totalItems / size);
+            var totalPages = size == 0 ? null : (int) Math.ceil((double) totalItems / size);
 
-            var meta = new Meta(page, totalPages, size, totalItems);
+            var meta = new Meta(
+                    size == 0 || page == 0 ? null : page,
+                    totalPages,
+                    size == 0 || page == 0 ? null : size,
+                    totalItems
+            );
 
             return Pair.of(products, meta);
         } catch (SQLException e) {
-            throw new InternalServerErrorException("error while retrieving products: " + e.getMessage());
+            throw new InternalServerErrorException();
         } catch (IllegalArgumentException e) {
-            throw new BadRequestException("error while retrieving products: " + e.getMessage());
+            throw new BadRequestException();
         }
     }
 
@@ -75,19 +80,19 @@ public class ProductServiceImpl implements ProductService {
     public Product getById(Long id) {
         try {
             var product = productRepository.getById(id)
-                    .orElseThrow(() -> new NotFoundException("product not found for ID: " + id));
+                    .orElseThrow(NotFoundException::new);
 
             var coordinates = coordinatesRepository.getById(product.getCoordinates().getId())
-                    .orElseThrow(() -> new NotFoundException("coordinates not found for ID: " + id));
+                    .orElseThrow(NotFoundException::new);
             product.setCoordinates(coordinates);
 
             var person = personRepository.getById(product.getOwner().getId())
-                    .orElseThrow(() -> new NotFoundException("person not found for ID: " + id));
+                    .orElseThrow(NotFoundException::new);
             product.setOwner(person);
 
             return product;
         } catch (SQLException e) {
-            throw new InternalServerErrorException("error while fetching product by ID: " + e.getMessage());
+            throw new InternalServerErrorException();
         }
     }
 
@@ -104,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
 
             productRepository.update(product);
         } catch (SQLException e) {
-            throw new InternalServerErrorException("error while updating product: " + e.getMessage());
+            throw new InternalServerErrorException();
         }
     }
 
@@ -115,16 +120,16 @@ public class ProductServiceImpl implements ProductService {
 
             productRepository.delete(id);
         } catch (SQLException e) {
-            throw new InternalServerErrorException("error while deleting product: " + e.getMessage());
+            throw new InternalServerErrorException();
         }
     }
 
     @Override
-    public void deleteByPrice(double price) {
+    public void deleteByPrice(Integer price) {
         try {
             productRepository.deleteByPrice(price);
         } catch (SQLException e) {
-            throw new InternalServerErrorException("error while deleting products by price: " + e.getMessage());
+            throw new InternalServerErrorException();
         }
     }
 
@@ -132,19 +137,19 @@ public class ProductServiceImpl implements ProductService {
     public Product getMinCreationDate() {
         try {
             var product = productRepository.getMinCreationDate()
-                    .orElseThrow(() -> new NotFoundException("no products found to determine minimum creation date"));
+                    .orElseThrow(NotFoundException::new);
 
             var coordinates = coordinatesRepository.getById(product.getCoordinates().getId())
-                    .orElseThrow(() -> new NotFoundException("coordinates not found for ID: " + product.getCoordinates().getId()));
+                    .orElseThrow(NotFoundException::new);
             product.setCoordinates(coordinates);
 
             var person = personRepository.getById(product.getOwner().getId())
-                    .orElseThrow(() -> new NotFoundException("person not found for ID: " + product.getOwner().getId()));
+                    .orElseThrow(NotFoundException::new);
             product.setOwner(person);
 
             return product;
         } catch (SQLException e) {
-            throw new InternalServerErrorException("error while fetching product with minimum creation date: " + e.getMessage());
+            throw new InternalServerErrorException();
         }
     }
 
@@ -153,7 +158,7 @@ public class ProductServiceImpl implements ProductService {
         try {
             return productRepository.getUniqueUnitOfMeasure();
         } catch (SQLException e) {
-            throw new InternalServerErrorException("error while fetching unique units of measure: " + e.getMessage());
+            throw new InternalServerErrorException();
         }
     }
 

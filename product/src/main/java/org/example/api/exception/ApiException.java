@@ -1,17 +1,12 @@
 package org.example.api.exception;
 
+import lombok.Getter;
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
+@Getter
 public abstract class ApiException extends RuntimeException {
 
     private final int statusCode;
-
-    public ApiException(int statusCode, String message) {
-        super(message);
-
-        this.statusCode = statusCode;
-    }
-
-    public int getStatusCode() {
-        return statusCode;
-    }
 
 }

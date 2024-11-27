@@ -20,7 +20,7 @@ public interface ProductService {
 
     void delete(Long id);
 
-    void deleteByPrice(double price);
+    void deleteByPrice(Integer price);
 
     Product getMinCreationDate();
 

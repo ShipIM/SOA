@@ -3,6 +3,7 @@ package org.example.controller;
 import com.example.service.ProductService;
 import org.example.dto.coordinates.CoordinatesResponse;
 import org.example.dto.meta.MetaResponse;
+import org.example.dto.meta.PaginationRequest;
 import org.example.dto.person.PersonResponse;
 import org.example.dto.product.ProductListResponse;
 import org.example.dto.product.ProductResponse;
@@ -13,6 +14,7 @@ import org.example.model.entity.Product;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.validation.Valid;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -32,9 +34,12 @@ public class EbayController {
     @Produces(MediaType.APPLICATION_JSON)
     public Response filterProductsByPrice(@PathParam("price-from") Integer priceFrom,
                                           @PathParam("price-to") Integer priceTo,
-                                          @QueryParam("page") Integer page,
-                                          @QueryParam("size") Integer size) {
-        var result = productService.getProductsByPriceRange(priceFrom, priceTo, page, size);
+                                          @Valid @BeanParam PaginationRequest paginationRequest) {
+        var result = productService.getProductsByPriceRange(
+                priceFrom, priceTo,
+                paginationRequest.getPage(),
+                paginationRequest.getSize()
+        );
 
         var products = result.getKey().stream()
                 .map(this::mapProductToResponse)

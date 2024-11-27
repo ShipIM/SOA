@@ -1,14 +1,18 @@
 package org.example.controller;
 
 import org.example.api.service.ProductService;
-import org.example.dto.coordinates.CoordinatesRequest;
+import org.example.dto.coordinates.CreateCoordinatesRequest;
 import org.example.dto.coordinates.CoordinatesResponse;
+import org.example.dto.coordinates.UpdateCoordinatesRequest;
 import org.example.dto.meta.MetaResponse;
-import org.example.dto.person.PersonRequest;
+import org.example.dto.meta.PaginationRequest;
+import org.example.dto.person.CreatePersonRequest;
 import org.example.dto.person.PersonResponse;
+import org.example.dto.person.UpdatePersonRequest;
 import org.example.dto.product.ProductListResponse;
-import org.example.dto.product.ProductRequest;
+import org.example.dto.product.CreateProductRequest;
 import org.example.dto.product.ProductResponse;
+import org.example.dto.product.UpdateProductRequest;
 import org.example.model.entity.Coordinates;
 import org.example.model.entity.Meta;
 import org.example.model.entity.Person;
@@ -19,11 +23,13 @@ import org.example.model.enumeration.UnitOfMeasure;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Positive;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
@@ -36,7 +42,7 @@ public class ProductController {
     private ProductService productService;
 
     @POST
-    public Response addProduct(ProductRequest request) {
+    public Response addProduct(@Valid CreateProductRequest request) {
         var product = mapProductFromRequest(request);
 
         product = productService.add(product);
@@ -47,11 +53,14 @@ public class ProductController {
     }
 
     @GET
-    public Response findAll(@QueryParam("page") Integer page,
-                            @QueryParam("size") Integer size,
+    public Response findAll(@Valid @BeanParam PaginationRequest paginationRequest,
                             @QueryParam("sort") List<String> sort,
                             @QueryParam("filter") List<String> filter) {
-        var result = productService.findAll(page, size, sort, filter);
+        var result = productService.findAll(
+                paginationRequest.getPage(),
+                paginationRequest.getSize(),
+                sort, filter
+        );
 
         var products = result.getKey().stream()
                 .map(this::mapProductToResponse)
@@ -75,7 +84,7 @@ public class ProductController {
 
     @PATCH
     @Path("/{id}")
-    public Response updateProduct(@PathParam("id") Long id, ProductRequest request) {
+    public Response updateProduct(@PathParam("id") Long id, @Valid @NotNull UpdateProductRequest request) {
         var product = mapProductFromRequest(request);
         product.setId(id);
 
@@ -126,7 +135,7 @@ public class ProductController {
 
     @DELETE
     @Path("/price/{price}")
-    public Response deleteProductsByPrice(@PathParam("price") Double price) {
+    public Response deleteProductsByPrice(@PathParam("price") @Positive Integer price) {
         productService.deleteByPrice(price);
 
         return Response.noContent().build();
@@ -142,7 +151,7 @@ public class ProductController {
         return Response.ok(response).build();
     }
 
-    private Product mapProductFromRequest(ProductRequest request) {
+    private Product mapProductFromRequest(CreateProductRequest request) {
         var product = Product.builder()
                 .productName(request == null ? null : request.getName())
                 .coordinates(request == null ? null : mapCoordinatesFromRequest(request.getCoordinates()))
@@ -153,7 +162,18 @@ public class ProductController {
         return product.build();
     }
 
-    private Coordinates mapCoordinatesFromRequest(CoordinatesRequest request) {
+    private Product mapProductFromRequest(UpdateProductRequest request) {
+        var product = Product.builder()
+                .productName(request == null ? null : request.getName())
+                .coordinates(request == null ? null : mapCoordinatesFromRequest(request.getCoordinates()))
+                .price(request == null ? null : request.getPrice())
+                .unitOfMeasure(request == null ? null : request.getUnitOfMeasure())
+                .owner(request == null ? null : mapPersonFromRequest(request.getOwner()));
+
+        return product.build();
+    }
+
+    private Coordinates mapCoordinatesFromRequest(CreateCoordinatesRequest request) {
         var coordinates = Coordinates.builder()
                 .x(request == null ? null : request.getX())
                 .y(request == null ? null : request.getY());
@@ -161,7 +181,26 @@ public class ProductController {
         return coordinates.build();
     }
 
-    private Person mapPersonFromRequest(PersonRequest request) {
+    private Coordinates mapCoordinatesFromRequest(UpdateCoordinatesRequest request) {
+        var coordinates = Coordinates.builder()
+                .x(request == null ? null : request.getX())
+                .y(request == null ? null : request.getY());
+
+        return coordinates.build();
+    }
+
+    private Person mapPersonFromRequest(CreatePersonRequest request) {
+        var person = Person.builder()
+                .personName(request == null ? null : request.getName())
+                .birthday(request == null ? null : request.getBirthday())
+                .height(request == null ? null : request.getHeight())
+                .eyeColor(request == null ? null : request.getEyeColor())
+                .nationality(request == null ? null : request.getNationality());
+
+        return person.build();
+    }
+
+    private Person mapPersonFromRequest(UpdatePersonRequest request) {
         var person = Person.builder()
                 .personName(request == null ? null : request.getName())
                 .birthday(request == null ? null : request.getBirthday())

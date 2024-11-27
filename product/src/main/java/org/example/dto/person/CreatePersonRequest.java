@@ -21,27 +21,27 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PersonRequest {
+public class CreatePersonRequest {
 
-    @NotNull(message = "Name cannot be null.")
-    @NotBlank(message = "Name cannot be empty.")
+    @NotNull(message = "name cannot be null")
+    @NotBlank(message = "name cannot be empty")
     private String name;
 
-    @PastOrPresent(message = "Birthday must be in the past or present.")
+    @PastOrPresent(message = "birthday must be in the past or present")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     @JsonDeserialize(using = LocalDateDeserializer.class)
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate birthday;
 
-    @NotNull(message = "Height cannot be null.")
-    @Positive(message = "Height must be greater than 0.")
+    @NotNull(message = "height cannot be null")
+    @Positive(message = "height must be greater than 0")
     private Double height;
 
-    @NotNull(message = "Eye color cannot be null.")
+    @NotNull(message = "eye color cannot be null")
     @JsonProperty("eye_color")
     private Color eyeColor;
 
-    @NotNull(message = "Nationality cannot be null.")
+    @NotNull(message = "nationality cannot be null")
     private Country nationality;
 
 }

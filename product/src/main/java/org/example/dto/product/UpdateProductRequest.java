@@ -4,26 +4,32 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.example.dto.coordinates.CoordinatesRequest;
-import org.example.dto.person.PersonRequest;
+import org.example.dto.coordinates.UpdateCoordinatesRequest;
+import org.example.dto.person.UpdatePersonRequest;
 import org.example.model.enumeration.UnitOfMeasure;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Positive;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductRequest {
+public class UpdateProductRequest {
 
+    @Pattern(regexp = "^$", message = "name cannot be empty")
     private String name;
 
-    private CoordinatesRequest coordinates;
+    @Valid
+    private UpdateCoordinatesRequest coordinates;
 
+    @Positive(message = "price must be greater than 0")
     private Integer price;
 
     @JsonProperty("unit_of_measure")
     private UnitOfMeasure unitOfMeasure;
 
-    private PersonRequest owner;
+    @Valid
+    private UpdatePersonRequest owner;
 
 }

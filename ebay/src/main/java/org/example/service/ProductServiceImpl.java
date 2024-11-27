@@ -29,7 +29,7 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public void increaseAllProductPrices(Integer increasePercent) {
-        var products = productGateway.fetchProducts(Collections.emptyList(), null, null);
+        var products = productGateway.fetchProducts(Collections.emptyList(), 0, 0);
 
         for (Product product : products.getKey()) {
             var newPrice = (int) (product.getPrice() * (1 + increasePercent / 100.0));

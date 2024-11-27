@@ -21,7 +21,7 @@ public interface ProductRepository {
 
     void delete(Long id) throws SQLException;
 
-    void deleteByPrice(double price) throws SQLException;
+    void deleteByPrice(Integer price) throws SQLException;
 
     Optional<Product> getMinCreationDate() throws SQLException;
 

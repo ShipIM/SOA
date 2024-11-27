@@ -12,7 +12,7 @@ public class ApiExceptionMapper implements ExceptionMapper<ApiException> {
 
     @Override
     public Response toResponse(ApiException exception) {
-        ErrorResponse errorResponse = new ErrorResponse(exception.getMessage());
+        var errorResponse = new ErrorResponse(exception.getMessage());
 
         return Response.status(exception.getStatusCode())
                 .entity(errorResponse)

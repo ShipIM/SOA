@@ -6,8 +6,8 @@ import javax.ws.rs.core.Response;
 
 public class ConflictException extends ApiException {
 
-    public ConflictException(String message) {
-        super(Response.Status.CONFLICT.getStatusCode(), message);
+    public ConflictException() {
+        super(Response.Status.CONFLICT.getStatusCode());
     }
 
 }
