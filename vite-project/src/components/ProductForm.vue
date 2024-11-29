@@ -2,7 +2,7 @@
   <div>
     <h1>{{ isEdit ? 'Edit' : 'Add' }} Product</h1>
     <ErrorMessage :message="errorMessage" />
-    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div> <!-- Success message display -->
+    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div>
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="product-name">Product Name</label>
@@ -29,8 +29,8 @@
       </div>
       <h3>Owner Information</h3>
       <div class="form-group">
-        <label for="owner-name">Owner Name (Required)</label>
-        <input id="owner-name" v-model="product.owner.name" placeholder="Owner Name (Required)" required />
+        <label for="owner-name">Owner Name</label>
+        <input id="owner-name" v-model="product.owner.name" placeholder="Owner Name" required />
       </div>
       <div class="form-group">
         <label for="owner-height">Owner Height (Greater than 0)</label>
@@ -196,7 +196,7 @@ button {
   margin-top: 10px;
 }
 .alert {
-  color: green; /* Customize your success message color */
+  color: green;
   margin-bottom: 10px;
 }
 </style>

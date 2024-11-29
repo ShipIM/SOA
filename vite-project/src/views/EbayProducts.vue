@@ -16,7 +16,7 @@
       <button @click="increasePrices">Increase Prices</button>
     </div>
 
-    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div> <!-- Success message display -->
+    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div>
 
     <h2>Filtered Products:</h2>
     <label>Page:
@@ -28,14 +28,23 @@
     <table>
       <thead>
         <tr>
-          <th>ID</th>
+          <th rowspan="2">ID</th>
+          <th rowspan="2">Name</th>
+          <th rowspan="2">Price</th>
+          <th rowspan="2">Creation Date</th>
+          <th rowspan="2">Unit of Measure</th>
+          <th colspan="2">Coordinates</th>
+          <th colspan="5">Owner</th>
+          <th rowspan="2">Actions</th>
+        </tr>
+        <tr>
+          <th>X</th>
+          <th>Y</th>
           <th>Name</th>
-          <th>Price</th>
-          <th>Creation Date</th>
-          <th>Coordinates</th>
-          <th>Unit of Measure</th>
-          <th>Owner</th>
-          <th>Actions</th>
+          <th>Height</th>
+          <th>Birthday</th>
+          <th>Eye Color</th>
+          <th>Nationality</th>
         </tr>
       </thead>
       <tbody>
@@ -44,9 +53,14 @@
           <td>{{ product.name }}</td>
           <td>{{ product.price }}</td>
           <td>{{ new Date(product.creation_date).toLocaleDateString() }}</td>
-          <td>X: {{ product.coordinates.x }}, Y: {{ product.coordinates.y }}</td>
-          <td>{{ product.unit_of_measure || 'N/A' }}</td>
+          <td>{{ product.unit_of_measure }}</td>
+          <td>{{ product.coordinates.x }}</td>
+          <td>{{ product.coordinates.y }}</td>
           <td>{{ product.owner ? product.owner.name : 'N/A' }}</td>
+          <td>{{ product.owner ? product.owner.height : 'N/A' }}</td>
+          <td>{{ product.owner.birthday ? new Date(product.owner.birthday).toLocaleDateString() : 'N/A' }}</td>
+          <td>{{ product.owner ? product.owner.eye_color : 'N/A' }}</td>
+          <td>{{ product.owner ? product.owner.nationality : 'N/A' }}</td>
           <td>
             <button @click="viewProduct(product.id)">View</button>
             <button @click="deleteProduct(product.id)">Delete</button>
@@ -97,7 +111,7 @@ export default {
       priceTo: null,
       increasePercent: null,
       errorMessage: '',
-      successMessage: '', // Add this line for success messages
+      successMessage: '',
       page: 1,
       pageSize: 10,
       totalPages: 1
@@ -111,7 +125,7 @@ export default {
           this.page = response.data.meta.current_page;
           this.totalPages = response.data.meta.total_pages;
           this.errorMessage = '';
-          this.successMessage = ''; // Clear any previous success message
+          this.successMessage = '';
         })
         .catch(error => {
           this.errorMessage = '';
@@ -136,11 +150,11 @@ export default {
     increasePrices() {
       axios.post(`http://localhost:8080/second-service/api/v1/ebay/price/increase/${this.increasePercent}`)
         .then(() => {
-          this.successMessage = 'Prices increased successfully!'; // Set success message
+          this.successMessage = 'Prices increased successfully!';
           setTimeout(() => {
-            this.successMessage = ''; // Clear message after a few seconds
+            this.successMessage = '';
           }, 3000);
-          this.filterByPrice(); // Refresh the product list after increasing prices
+          this.filterByPrice();
         })
         .catch(error => {
           if (error.response) {
@@ -152,7 +166,7 @@ export default {
         });
     },
     viewProduct(productId) {
-      this.$router.push({ path: `/product/${productId}` }); // Navigate to product details page
+      this.$router.push({ path: `/product/${productId}` });
     },
     deleteProduct(productId) {
       if (confirm('Are you sure you want to delete this product?')) {
@@ -160,9 +174,9 @@ export default {
           .then(() => {
             this.successMessage = 'Product deleted successfully!';
             setTimeout(() => {
-              this.successMessage = ''; // Clear message after a short period
+              this.successMessage = '';
             }, 3000);
-            this.filterByPrice(); // Refresh the product list
+            this.filterByPrice();
           })
           .catch(error => {
             this.errorMessage = error.response ?
