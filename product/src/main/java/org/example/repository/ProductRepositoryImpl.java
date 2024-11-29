@@ -55,9 +55,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public List<Product> findAll(Integer page, Integer size, List<String> sort, List<String> filter) throws SQLException {
         var products = new ArrayList<Product>();
 
-        var sql = new StringBuilder("SELECT p.*, c.x AS coord_x, c.y AS coord_y, " +
-                "pe.person_name, pe.birthday, pe.height, " +
-                "pe.eye_color, pe.nationality " +
+        var sql = new StringBuilder("SELECT p.* " +
                 "FROM product p " +
                 "JOIN coordinates c ON p.coordinates_id = c.id " +
                 "JOIN person pe ON p.owner_id = pe.id " +
@@ -157,40 +155,102 @@ public class ProductRepositoryImpl implements ProductRepository {
         return 0;
     }
 
-    private String parseFilter(String filter) {
-        var field = filter.substring(0, filter.indexOf("["));
-        var operator = filter.substring(filter.indexOf("[") + 1, filter.indexOf("]"));
-        var value = filter.substring(filter.indexOf("]") + 2);
-
-        switch (operator) {
-            case "=":
-            case "!=":
-            case "<":
-            case ">":
-            case "<=":
-            case ">=":
-                return field + " " + operator + " '" + value + "'";
+    private String mapField(String field) {
+        switch (field) {
+            case "name":
+                return "product_name";
+            case "creationDate":
+                return "creation_date";
+            case "price":
+                return "price";
+            case "unitOfMeasure":
+                return "unit_of_measure";
+            case "owner.name":
+                return "person_name";
+            case "owner.birthday":
+                return "birthday";
+            case "owner.height":
+                return "height";
+            case "owner.eyeColor":
+                return "eye_color";
+            case "owner.nationality":
+                return "nationality";
+            case "coordinates.x":
+                return "x";
+            case "coordinates.y":
+                return "y";
             default:
-                throw new IllegalArgumentException("unsupported operator: " + operator);
+                throw new IllegalArgumentException("unsupported field: " + field);
+        }
+    }
+
+    private String parseFilter(String filter) {
+        if (filter == null || !filter.contains("[") || !filter.contains("]") || !filter.contains("=")) {
+            throw new IllegalArgumentException("invalid filter format, expected format: field[operator]=value");
+        }
+
+        try {
+            var field = filter.substring(0, filter.indexOf("["));
+            var operator = filter.substring(filter.indexOf("[") + 1, filter.indexOf("]"));
+            var value = filter.substring(filter.indexOf("]") + 2);
+
+            if (field.isBlank() || operator.isBlank() || value.isBlank()) {
+                throw new IllegalArgumentException("invalid filter: field, operator, or value is missing");
+            }
+
+            var column = mapField(field);
+
+            switch (operator) {
+                case "=":
+                case "!=":
+                case "<":
+                case ">":
+                case "<=":
+                case ">=":
+                    return column + " " + operator + " '" + value + "'";
+                default:
+                    throw new IllegalArgumentException("unsupported operator: " + operator);
+            }
+        } catch (StringIndexOutOfBoundsException e) {
+            throw new IllegalArgumentException("invalid filter format, expected format: field[operator]=value", e);
         }
     }
 
     private String parseSort(List<String> sort) {
+        if (sort == null || sort.isEmpty()) {
+            throw new IllegalArgumentException("sort conditions cannot be null or empty");
+        }
+
         var sorting = new StringBuilder();
 
         for (int i = 0; i < sort.size(); i++) {
-            var parts = sort.get(i).split(":");
-            var field = parts[0];
-            var direction = parts.length > 1 ? parts[1].toUpperCase() : "ASC";
+            var condition = sort.get(i);
 
-            if (!direction.equals("ASC") && !direction.equals("DESC")) {
-                throw new IllegalArgumentException("invalid sort direction: " + direction);
+            if (condition == null || !condition.contains(":")) {
+                throw new IllegalArgumentException("invalid sort format, expected format: field:direction");
             }
 
-            sorting.append(field).append(" ").append(direction);
+            try {
+                var parts = condition.split(":");
+                var field = parts[0];
+                var direction = parts.length > 1 ? parts[1].toUpperCase() : "ASC";
 
-            if (i < sort.size() - 1) {
-                sorting.append(", ");
+                if (field.isBlank()) {
+                    throw new IllegalArgumentException("field name cannot be blank in sort condition");
+                }
+
+                if (!direction.equals("ASC") && !direction.equals("DESC")) {
+                    throw new IllegalArgumentException("invalid sort direction: " + direction + ". Use ASC or DESC");
+                }
+
+                var column = mapField(field);
+                sorting.append(column).append(" ").append(direction);
+
+                if (i < sort.size() - 1) {
+                    sorting.append(", ");
+                }
+            } catch (ArrayIndexOutOfBoundsException e) {
+                throw new IllegalArgumentException("invalid sort format, expected format: field:direction", e);
             }
         }
 

@@ -6,7 +6,6 @@ import org.example.model.entity.Product;
 import org.example.model.enumeration.UnitOfMeasure;
 
 import java.util.List;
-import java.util.Map;
 
 public interface ProductService {
 

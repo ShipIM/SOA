@@ -13,6 +13,10 @@ public class InvalidFormatExceptionMapper implements ExceptionMapper<InvalidForm
 
     @Override
     public Response toResponse(InvalidFormatException exception) {
+        var jsonObject = Json.createObjectBuilder();
+
+        var jsonArray = Json.createArrayBuilder();
+
         var fieldName = exception.getPath() != null && !exception.getPath().isEmpty()
                 ? exception.getPath().get(0).getFieldName()
                 : "unknown field";
@@ -26,9 +30,13 @@ public class InvalidFormatExceptionMapper implements ExceptionMapper<InvalidForm
                 .add("field", fieldName)
                 .add("message", message)
                 .build();
+        jsonArray.add(errorResponse);
+
+        var errorJsonEntity = jsonObject.add("errors", jsonArray.build()).build();
 
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity(errorResponse)
+                .entity(errorJsonEntity)
                 .build();
     }
+
 }

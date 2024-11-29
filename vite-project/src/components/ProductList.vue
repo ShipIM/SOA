@@ -20,8 +20,8 @@
           <th rowspan="2" @click="setSort('id')">ID <span v-if="isSorted('id')">{{ sortDirection('id') }}</span></th>
           <th rowspan="2" @click="setSort('name')">Name <span v-if="isSorted('name')">{{ sortDirection('name') }}</span></th>
           <th rowspan="2" @click="setSort('price')">Price <span v-if="isSorted('price')">{{ sortDirection('price') }}</span></th>
-          <th rowspan="2" @click="setSort('creation_date')">Creation Date <span v-if="isSorted('creation_date')">{{ sortDirection('creation_date') }}</span></th>
-          <th rowspan="2" @click="setSort('unit_of_measure')">Unit of Measure <span v-if="isSorted('unit_of_measure')">{{ sortDirection('unit_of_measure') }}</span></th>
+          <th rowspan="2" @click="setSort('creationDate')">Creation Date <span v-if="isSorted('creationDate')">{{ sortDirection('creationDate') }}</span></th>
+          <th rowspan="2" @click="setSort('unitOfMeasure')">Unit of Measure <span v-if="isSorted('unitOfMeasure')">{{ sortDirection('unitOfMeasure') }}</span></th>
           <th colspan="2">Coordinates</th>
           <th colspan="5">Owner <span v-if="isSorted('owner')">{{ sortDirection('owner') }}</span></th>
           <th rowspan="2">Actions</th>
@@ -32,7 +32,7 @@
           <th @click="setSort('owner.name')">Name <span v-if="isSorted('owner.name')">{{ sortDirection('owner.name') }}</span></th>
           <th @click="setSort('owner.height')">Height <span v-if="isSorted('owner.height')">{{ sortDirection('owner.height') }}</span></th>
           <th @click="setSort('owner.birthday')">Birthday <span v-if="isSorted('owner.birthday')">{{ sortDirection('owner.birthday') }}</span></th>
-          <th @click="setSort('owner.eye_color')">Eye Color <span v-if="isSorted('owner.eye_color')">{{ sortDirection('owner.eye_color') }}</span></th>
+          <th @click="setSort('owner.eyeColor')">Eye Color <span v-if="isSorted('owner.eyeColor')">{{ sortDirection('owner.eyeColor') }}</span></th>
           <th @click="setSort('owner.nationality')">Nationality <span v-if="isSorted('owner.nationality')">{{ sortDirection('owner.nationality') }}</span></th>
         </tr>
       </thead>
