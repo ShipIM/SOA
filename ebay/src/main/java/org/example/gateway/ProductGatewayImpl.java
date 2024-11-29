@@ -10,6 +10,7 @@ import org.example.dto.person.PersonResponse;
 import org.example.dto.product.ProductListResponse;
 import org.example.dto.product.ProductRequest;
 import org.example.dto.product.ProductResponse;
+import org.example.exception.ServiceUnavailableException;
 import org.example.model.entity.Coordinates;
 import org.example.model.entity.Meta;
 import org.example.model.entity.Person;
@@ -60,7 +61,7 @@ public class ProductGatewayImpl implements ProductGateway {
 
             return Pair.of(products, meta);
         } else {
-            throw new RuntimeException("failed to fetch products: " + response.getStatus());
+            throw new ServiceUnavailableException("failed to fetch products: " + response.getStatus());
         }
     }
 
@@ -76,7 +77,7 @@ public class ProductGatewayImpl implements ProductGateway {
                 .request(MediaType.APPLICATION_JSON)
                 .method("patch", Entity.entity(productRequest, MediaType.APPLICATION_JSON))) {
             if (response.getStatus() != 204) {
-                throw new RuntimeException("failed to update product: " + product.getOwner().getBirthday());
+                throw new ServiceUnavailableException("failed to update product: " + product.getOwner().getBirthday());
             }
         }
     }

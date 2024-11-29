@@ -117,6 +117,12 @@ public class ProductRepositoryImpl implements ProductRepository {
                     products.add(product);
                 }
             }
+        } catch (SQLException e) {
+            if (e.getMessage().contains("invalid input syntax")) {
+                throw new IllegalArgumentException(e.getMessage().split(":")[1].trim());
+            }
+
+            throw e;
         }
 
         return products;
@@ -150,6 +156,12 @@ public class ProductRepositoryImpl implements ProductRepository {
                     return resultSet.getInt(1);
                 }
             }
+        } catch (SQLException e) {
+            if (e.getMessage().contains("invalid input syntax")) {
+                throw new IllegalArgumentException(e.getMessage().split(":")[1].trim());
+            }
+
+            throw e;
         }
 
         return 0;
@@ -157,6 +169,8 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     private String mapField(String field) {
         switch (field) {
+            case "id":
+                return "p.id";
             case "name":
                 return "product_name";
             case "creationDate":
@@ -193,6 +207,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             var field = filter.substring(0, filter.indexOf("["));
             var operator = filter.substring(filter.indexOf("[") + 1, filter.indexOf("]"));
             var value = filter.substring(filter.indexOf("]") + 2);
+            value = value.replace("'", "''");
 
             if (field.isBlank() || operator.isBlank() || value.isBlank()) {
                 throw new IllegalArgumentException("invalid filter: field, operator, or value is missing");
