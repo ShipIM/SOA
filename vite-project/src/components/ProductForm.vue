@@ -2,7 +2,7 @@
   <div>
     <h1>{{ isEdit ? 'Edit' : 'Add' }} Product</h1>
     <ErrorMessage :message="errorMessage" />
-    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div> <!-- Success message display -->
+    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div>
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="product-name">Product Name</label>
@@ -196,7 +196,7 @@ button {
   margin-top: 10px;
 }
 .alert {
-  color: green; /* Customize your success message color */
+  color: green;
   margin-bottom: 10px;
 }
 </style>

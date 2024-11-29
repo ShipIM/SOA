@@ -16,7 +16,7 @@
       <button @click="increasePrices">Increase Prices</button>
     </div>
 
-    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div> <!-- Success message display -->
+    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div>
 
     <h2>Filtered Products:</h2>
     <label>Page:
@@ -111,7 +111,7 @@ export default {
       priceTo: null,
       increasePercent: null,
       errorMessage: '',
-      successMessage: '', // Add this line for success messages
+      successMessage: '',
       page: 1,
       pageSize: 10,
       totalPages: 1
@@ -125,7 +125,7 @@ export default {
           this.page = response.data.meta.current_page;
           this.totalPages = response.data.meta.total_pages;
           this.errorMessage = '';
-          this.successMessage = ''; // Clear any previous success message
+          this.successMessage = '';
         })
         .catch(error => {
           this.errorMessage = '';
@@ -150,11 +150,11 @@ export default {
     increasePrices() {
       axios.post(`http://localhost:8080/second-service/api/v1/ebay/price/increase/${this.increasePercent}`)
         .then(() => {
-          this.successMessage = 'Prices increased successfully!'; // Set success message
+          this.successMessage = 'Prices increased successfully!';
           setTimeout(() => {
-            this.successMessage = ''; // Clear message after a few seconds
+            this.successMessage = '';
           }, 3000);
-          this.filterByPrice(); // Refresh the product list after increasing prices
+          this.filterByPrice();
         })
         .catch(error => {
           if (error.response) {
@@ -166,7 +166,7 @@ export default {
         });
     },
     viewProduct(productId) {
-      this.$router.push({ path: `/product/${productId}` }); // Navigate to product details page
+      this.$router.push({ path: `/product/${productId}` });
     },
     deleteProduct(productId) {
       if (confirm('Are you sure you want to delete this product?')) {
@@ -174,9 +174,9 @@ export default {
           .then(() => {
             this.successMessage = 'Product deleted successfully!';
             setTimeout(() => {
-              this.successMessage = ''; // Clear message after a short period
+              this.successMessage = '';
             }, 3000);
-            this.filterByPrice(); // Refresh the product list
+            this.filterByPrice();
           })
           .catch(error => {
             this.errorMessage = error.response ?
