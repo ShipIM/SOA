@@ -29,8 +29,8 @@
       </div>
       <h3>Owner Information</h3>
       <div class="form-group">
-        <label for="owner-name">Owner Name (Required)</label>
-        <input id="owner-name" v-model="product.owner.name" placeholder="Owner Name (Required)" required />
+        <label for="owner-name">Owner Name</label>
+        <input id="owner-name" v-model="product.owner.name" placeholder="Owner Name" required />
       </div>
       <div class="form-group">
         <label for="owner-height">Owner Height (Greater than 0)</label>

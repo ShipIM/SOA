@@ -28,14 +28,23 @@
     <table>
       <thead>
         <tr>
-          <th>ID</th>
+          <th rowspan="2">ID</th>
+          <th rowspan="2">Name</th>
+          <th rowspan="2">Price</th>
+          <th rowspan="2">Creation Date</th>
+          <th rowspan="2">Unit of Measure</th>
+          <th colspan="2">Coordinates</th>
+          <th colspan="5">Owner</th>
+          <th rowspan="2">Actions</th>
+        </tr>
+        <tr>
+          <th>X</th>
+          <th>Y</th>
           <th>Name</th>
-          <th>Price</th>
-          <th>Creation Date</th>
-          <th>Coordinates</th>
-          <th>Unit of Measure</th>
-          <th>Owner</th>
-          <th>Actions</th>
+          <th>Height</th>
+          <th>Birthday</th>
+          <th>Eye Color</th>
+          <th>Nationality</th>
         </tr>
       </thead>
       <tbody>
@@ -44,9 +53,14 @@
           <td>{{ product.name }}</td>
           <td>{{ product.price }}</td>
           <td>{{ new Date(product.creation_date).toLocaleDateString() }}</td>
-          <td>X: {{ product.coordinates.x }}, Y: {{ product.coordinates.y }}</td>
-          <td>{{ product.unit_of_measure || 'N/A' }}</td>
+          <td>{{ product.unit_of_measure }}</td>
+          <td>{{ product.coordinates.x }}</td>
+          <td>{{ product.coordinates.y }}</td>
           <td>{{ product.owner ? product.owner.name : 'N/A' }}</td>
+          <td>{{ product.owner ? product.owner.height : 'N/A' }}</td>
+          <td>{{ product.owner.birthday ? new Date(product.owner.birthday).toLocaleDateString() : 'N/A' }}</td>
+          <td>{{ product.owner ? product.owner.eye_color : 'N/A' }}</td>
+          <td>{{ product.owner ? product.owner.nationality : 'N/A' }}</td>
           <td>
             <button @click="viewProduct(product.id)">View</button>
             <button @click="deleteProduct(product.id)">Delete</button>
