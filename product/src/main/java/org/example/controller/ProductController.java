@@ -1,16 +1,16 @@
 package org.example.controller;
 
 import org.example.api.service.ProductService;
-import org.example.dto.coordinates.CreateCoordinatesRequest;
 import org.example.dto.coordinates.CoordinatesResponse;
+import org.example.dto.coordinates.CreateCoordinatesRequest;
 import org.example.dto.coordinates.UpdateCoordinatesRequest;
 import org.example.dto.meta.MetaResponse;
 import org.example.dto.meta.PaginationRequest;
 import org.example.dto.person.CreatePersonRequest;
 import org.example.dto.person.PersonResponse;
 import org.example.dto.person.UpdatePersonRequest;
-import org.example.dto.product.ProductListResponse;
 import org.example.dto.product.CreateProductRequest;
+import org.example.dto.product.ProductListResponse;
 import org.example.dto.product.ProductResponse;
 import org.example.dto.product.UpdateProductRequest;
 import org.example.model.entity.Coordinates;

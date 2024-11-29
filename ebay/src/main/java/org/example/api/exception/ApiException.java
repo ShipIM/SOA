@@ -9,4 +9,6 @@ public abstract class ApiException extends RuntimeException {
 
     private final int statusCode;
 
+    private final String message;
+
 }
