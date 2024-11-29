@@ -2,6 +2,7 @@
   <div>
     <h1>{{ isEdit ? 'Edit' : 'Add' }} Product</h1>
     <ErrorMessage :message="errorMessage" />
+    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div> <!-- Success message display -->
     <form @submit.prevent="submitForm">
       <div class="form-group">
         <label for="product-name">Product Name</label>
@@ -84,6 +85,7 @@ export default {
       },
       isEdit: false,
       errorMessage: '',
+      successMessage: '',  // Add this line for success messages
       units: [],
       eyeColors: [],
       countries: []
@@ -137,9 +139,16 @@ export default {
       const method = this.isEdit ? 'patch' : 'post';
       const url = this.isEdit ? `http://localhost:8080/first-service/api/v1/products/${this.product.id}` : 'http://localhost:8080/first-service/api/v1/products';
 
-      axios[method](url, this.product)
+      // Create a copy of the product object without id and creationDate
+      const { id, creation_date, ...productWithoutIdAndDate } = this.product;
+
+      axios[method](url, this.isEdit ? productWithoutIdAndDate : this.product)
         .then(() => {
-          this.$router.push({ name: 'Products' });
+          this.successMessage = this.isEdit ? 'Product updated successfully!' : 'Product added successfully!'; // Set success message
+          setTimeout(() => {
+            this.successMessage = ''; // Clear message after a few seconds
+          }, 3000);
+          this.isEdit ? this.$router.push({ name: 'ProductUpdate', params: { id: this.product.id } }) : this.$router.push({ name: 'Products' });
         })
         .catch(error => {
           if (error.response) {
@@ -185,5 +194,9 @@ input, select {
 }
 button {
   margin-top: 10px;
+}
+.alert {
+  color: green; /* Customize your success message color */
+  margin-bottom: 10px;
 }
 </style>

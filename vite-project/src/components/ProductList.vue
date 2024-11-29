@@ -13,6 +13,7 @@
       </label>
     </div>
     <ErrorMessage :message="errorMessage" />
+    <div v-if="successMessage" class="alert alert-success">{{ successMessage }}</div> <!-- Success message display -->
     <table>
       <thead>
         <tr>
@@ -62,10 +63,11 @@ export default {
     return {
       products: [],
       errorMessage: '',
+      successMessage: '', // Add success message
       page: 1,
       size: 10,
       totalPages: 1,
-      selectedSort: [], // Keep sort criteria as an array
+      selectedSort: [],
       filter: ''
     };
   },
@@ -76,16 +78,14 @@ export default {
         size: this.size,
       };
 
-      const sort =  this.selectedSort.length ? 
-              this.selectedSort.map(s => `${s.field}:${s.direction}`).join("&sort=") : 
-              null
+      const sort = this.selectedSort.length ? 
+        this.selectedSort.map(s => `${s.field}:${s.direction}`).join("&sort=") : 
+        null;
 
-      var endpoint = ""
-      if (sort == null) {
-        endpoint = `http://localhost:8080/first-service/api/v1/products/`
-      } else {
-        endpoint = `http://localhost:8080/first-service/api/v1/products/?sort=${sort}`
-      }
+      const endpoint = sort == null 
+        ? `http://localhost:8080/first-service/api/v1/products/`
+        : `http://localhost:8080/first-service/api/v1/products/?sort=${sort}`;
+
       axios.get(endpoint, { params })
         .then(response => {
           this.products = response.data.data;
@@ -93,20 +93,30 @@ export default {
           this.errorMessage = '';
         })
         .catch(error => {
-          this.errorMessage = error.response ? error.response.data.errors.map(e => `${e.field}: ${e.message}`).join(', ') : 'Server Error';
+          this.errorMessage = error.response ? 
+            error.response.data.errors.map(e => `${e.field}: ${e.message}`).join(', ') : 
+            'Server Error';
         });
     },
     viewProduct(id) {
       this.$router.push({ path: `/product/${id}` });
     },
     deleteProduct(id) {
-      axios.delete(`http://localhost:8080/first-service/api/v1/products/${id}`)
-        .then(() => {
-          this.fetchProducts();
-        })
-        .catch(error => {
-          this.errorMessage = error.response ? error.response.data.errors.map(e => `${e.field}: ${e.message}`).join(', ') : 'Server Error';
-        });
+      if (confirm('Are you sure you want to delete this product?')) {
+        axios.delete(`http://localhost:8080/first-service/api/v1/products/${id}`)
+          .then(() => {
+            this.successMessage = 'Product deleted successfully!'; // Set success message
+            setTimeout(() => {
+              this.successMessage = ''; // Clear message after a few seconds
+            }, 3000);
+            this.fetchProducts(); // Refresh the product list
+          })
+          .catch(error => {
+            this.errorMessage = error.response ? 
+              error.response.data.errors.map(e => `${e.field}: ${e.message}`).join(', ') : 
+              'Server Error';
+          });
+      }
     },
     nextPage() {
       if (this.page < this.totalPages) {
@@ -162,5 +172,9 @@ th, td {
 }
 th:hover {
   background-color: #f0f0f0;
+}
+.alert {
+  color: green; /* Customize your success message color */
+  margin-bottom: 10px;
 }
 </style>
