@@ -13,6 +13,7 @@ import org.example.model.enumeration.Color;
 import org.example.model.enumeration.Country;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PastOrPresent;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
@@ -22,6 +23,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UpdatePersonRequest {
 
+    @NotNull(message = "name cannot be null")
     @NotBlank(message = "name cannot be empty")
     private String name;
 

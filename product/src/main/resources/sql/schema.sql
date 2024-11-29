@@ -1,11 +1,11 @@
 CREATE TABLE coordinates (
-    coordinates_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     x REAL CHECK (x <= 39),
     y INT NOT NULL CHECK (y <= 905)
 );
 
 CREATE TABLE person (
-    person_id SERIAL PRIMARY KEY,
+    id SERIAL PRIMARY KEY,
     person_name TEXT NOT NULL CHECK (person_name <> ''),
     birthday DATE,
     height DOUBLE PRECISION NOT NULL CHECK (height > 0),
