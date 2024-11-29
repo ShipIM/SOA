@@ -8,8 +8,6 @@ import org.example.dto.coordinates.CoordinatesRequest;
 import org.example.dto.person.PersonRequest;
 import org.example.model.enumeration.UnitOfMeasure;
 
-import javax.validation.constraints.Positive;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

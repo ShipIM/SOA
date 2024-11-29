@@ -8,7 +8,8 @@ import org.example.model.enumeration.Country;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Date;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 

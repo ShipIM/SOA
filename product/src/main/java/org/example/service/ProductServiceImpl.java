@@ -40,7 +40,7 @@ public class ProductServiceImpl implements ProductService {
 
             return productRepository.create(product);
         } catch (SQLException e) {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("something went wrong on adding product: " + e.getMessage());
         }
     }
 
@@ -50,11 +50,11 @@ public class ProductServiceImpl implements ProductService {
             var products = productRepository.findAll(page, size, sort, filter);
             for (var product : products) {
                 var coordinates = coordinatesRepository.getById(product.getCoordinates().getId())
-                        .orElseThrow(NotFoundException::new);
+                        .orElseThrow(() -> new NotFoundException("there is no coordinates with such an id"));
                 product.setCoordinates(coordinates);
 
                 var person = personRepository.getById(product.getOwner().getId())
-                        .orElseThrow(NotFoundException::new);
+                        .orElseThrow(() -> new NotFoundException("there is no person with such an id"));
                 product.setOwner(person);
             }
 
@@ -70,9 +70,9 @@ public class ProductServiceImpl implements ProductService {
 
             return Pair.of(products, meta);
         } catch (SQLException e) {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("something went wrong on retrieving products: " + e.getMessage());
         } catch (IllegalArgumentException e) {
-            throw new BadRequestException();
+            throw new BadRequestException(e.getMessage());
         }
     }
 
@@ -80,19 +80,19 @@ public class ProductServiceImpl implements ProductService {
     public Product getById(Long id) {
         try {
             var product = productRepository.getById(id)
-                    .orElseThrow(NotFoundException::new);
+                    .orElseThrow(() -> new NotFoundException("there is no product with such an id"));
 
             var coordinates = coordinatesRepository.getById(product.getCoordinates().getId())
-                    .orElseThrow(NotFoundException::new);
+                    .orElseThrow(() -> new NotFoundException("there is no coordinates with such an id"));
             product.setCoordinates(coordinates);
 
             var person = personRepository.getById(product.getOwner().getId())
-                    .orElseThrow(NotFoundException::new);
+                    .orElseThrow(() -> new NotFoundException("there is no person with such an id"));
             product.setOwner(person);
 
             return product;
         } catch (SQLException e) {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("something went wrong on retrieving product: " + e.getMessage());
         }
     }
 
@@ -109,7 +109,7 @@ public class ProductServiceImpl implements ProductService {
 
             productRepository.update(product);
         } catch (SQLException e) {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("something went wrong on updating product: " + e.getMessage());
         }
     }
 
@@ -120,7 +120,7 @@ public class ProductServiceImpl implements ProductService {
 
             productRepository.delete(id);
         } catch (SQLException e) {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("something went wrong on deleting product: " + e.getMessage());
         }
     }
 
@@ -129,7 +129,7 @@ public class ProductServiceImpl implements ProductService {
         try {
             productRepository.deleteByPrice(price);
         } catch (SQLException e) {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("something went wrong on deleting product: " + e.getMessage());
         }
     }
 
@@ -137,19 +137,19 @@ public class ProductServiceImpl implements ProductService {
     public Product getMinCreationDate() {
         try {
             var product = productRepository.getMinCreationDate()
-                    .orElseThrow(NotFoundException::new);
+                    .orElseThrow(() -> new NotFoundException("there is no product with such an id"));
 
             var coordinates = coordinatesRepository.getById(product.getCoordinates().getId())
-                    .orElseThrow(NotFoundException::new);
+                    .orElseThrow(() -> new NotFoundException("there is no coordinates with such an id"));
             product.setCoordinates(coordinates);
 
             var person = personRepository.getById(product.getOwner().getId())
-                    .orElseThrow(NotFoundException::new);
+                    .orElseThrow(() -> new NotFoundException("there is no person with such an id"));
             product.setOwner(person);
 
             return product;
         } catch (SQLException e) {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("something went wrong on retrieving product: " + e.getMessage());
         }
     }
 
@@ -158,7 +158,7 @@ public class ProductServiceImpl implements ProductService {
         try {
             return productRepository.getUniqueUnitOfMeasure();
         } catch (SQLException e) {
-            throw new InternalServerErrorException();
+            throw new InternalServerErrorException("something went wrong on retrieving measures: " + e.getMessage());
         }
     }
 

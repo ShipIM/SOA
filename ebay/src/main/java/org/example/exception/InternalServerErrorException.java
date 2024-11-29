@@ -6,8 +6,8 @@ import javax.ws.rs.core.Response;
 
 public class InternalServerErrorException extends ApiException {
 
-    public InternalServerErrorException() {
-        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode());
+    public InternalServerErrorException(String message) {
+        super(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), message);
     }
 
 }
