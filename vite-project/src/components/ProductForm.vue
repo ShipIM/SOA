@@ -85,7 +85,7 @@ export default {
       },
       isEdit: false,
       errorMessage: '',
-      successMessage: '',  // Add this line for success messages
+      successMessage: '',
       units: [],
       eyeColors: [],
       countries: []
@@ -94,7 +94,7 @@ export default {
   methods: {
     fetchProduct() {
       const id = this.$route.params.id;
-      axios.get(`http://localhost:8080/first-service/api/v1/products/${id}`)
+      axios.get(`https://localhost:8443/first-service/api/v1/products/${id}`)
         .then(response => {
           this.product = response.data;
           this.errorMessage = '';
@@ -109,7 +109,7 @@ export default {
         });
     },
     fetchUnits() {
-      axios.get('http://localhost:8080/first-service/api/v1/products/measure')
+      axios.get('https://localhost:8443/first-service/api/v1/products/measure')
         .then(response => {
           this.units = response.data;
         })
@@ -118,7 +118,7 @@ export default {
         });
     },
     fetchEyeColors() {
-      axios.get('http://localhost:8080/first-service/api/v1/products/color')
+      axios.get('https://localhost:8443/first-service/api/v1/products/color')
         .then(response => {
           this.eyeColors = response.data;
         })
@@ -127,7 +127,7 @@ export default {
         });
     },
     fetchCountries() {
-      axios.get('http://localhost:8080/first-service/api/v1/products/country')
+      axios.get('https://localhost:8443/first-service/api/v1/products/country')
         .then(response => {
           this.countries = response.data;
         })
@@ -137,16 +137,15 @@ export default {
     },
     submitForm() {
       const method = this.isEdit ? 'patch' : 'post';
-      const url = this.isEdit ? `http://localhost:8080/first-service/api/v1/products/${this.product.id}` : 'http://localhost:8080/first-service/api/v1/products';
+      const url = this.isEdit ? `https://localhost:8443/first-service/api/v1/products/${this.product.id}` : 'https://localhost:8443/first-service/api/v1/products';
 
-      // Create a copy of the product object without id and creationDate
       const { id, creation_date, ...productWithoutIdAndDate } = this.product;
 
       axios[method](url, this.isEdit ? productWithoutIdAndDate : this.product)
         .then(() => {
-          this.successMessage = this.isEdit ? 'Product updated successfully!' : 'Product added successfully!'; // Set success message
+          this.successMessage = this.isEdit ? 'Product updated successfully!' : 'Product added successfully!';
           setTimeout(() => {
-            this.successMessage = ''; // Clear message after a few seconds
+            this.successMessage = '';
           }, 3000);
           this.isEdit ? this.$router.push({ name: 'ProductUpdate', params: { id: this.product.id } }) : this.$router.push({ name: 'Products' });
         })

@@ -47,7 +47,7 @@ export default {
   },
   methods: {
     fetchMeasures() {
-      axios.get('http://localhost:8080/first-service/api/v1/products/measure')
+      axios.get('https://localhost:8443/first-service/api/v1/products/measure')
         .then(response => {
           console.log(response);
           this.units = response.data;
