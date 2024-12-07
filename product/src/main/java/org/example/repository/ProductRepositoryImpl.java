@@ -9,9 +9,11 @@ import org.example.model.enumeration.UnitOfMeasure;
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.sql.DataSource;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -28,16 +30,24 @@ public class ProductRepositoryImpl implements ProductRepository {
         var sql = "INSERT INTO product (product_name, coordinates_id, creation_date, price, unit_of_measure, owner_id) "
                 + "VALUES (?, ?, ?, ?, ?, ?) RETURNING id";
 
-        product.setCreationDate(LocalDate.now());
+        product.setCreationDate(ZonedDateTime.now(ZoneOffset.UTC));
 
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(sql)) {
             statement.setString(1, product.getProductName());
             statement.setLong(2, product.getCoordinates().getId());
-            statement.setDate(3, Date.valueOf(product.getCreationDate()));
+            statement.setTimestamp(3, Timestamp.valueOf(product.getCreationDate().toLocalDateTime()));
             statement.setDouble(4, product.getPrice());
-            statement.setString(5, product.getUnitOfMeasure().name());
-            statement.setLong(6, product.getOwner().getId());
+            if (product.getUnitOfMeasure() != null) {
+                statement.setString(5, product.getUnitOfMeasure().name());
+            } else {
+                statement.setNull(5, java.sql.Types.VARCHAR);
+            }
+            if (product.getOwner() != null) {
+                statement.setLong(6, product.getOwner().getId());
+            } else {
+                statement.setNull(6, java.sql.Types.BIGINT);
+            }
 
             try (var resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -58,7 +68,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         var sql = new StringBuilder("SELECT p.* " +
                 "FROM product p " +
                 "JOIN coordinates c ON p.coordinates_id = c.id " +
-                "JOIN person pe ON p.owner_id = pe.id " +
+                "LEFT JOIN person pe ON p.owner_id = pe.id " +
                 "WHERE 1=1");
 
         if (filter != null) {
@@ -108,9 +118,9 @@ public class ProductRepositoryImpl implements ProductRepository {
                             resultSet.getLong("id"),
                             resultSet.getString("product_name"),
                             coordinates,
-                            resultSet.getDate("creation_date").toLocalDate(),
+                            resultSet.getTimestamp("creation_date").toInstant().atZone(ZoneId.of("UTC")),
                             resultSet.getInt("price"),
-                            UnitOfMeasure.valueOf(resultSet.getString("unit_of_measure")),
+                            resultSet.getString("unit_of_measure") == null ? null : UnitOfMeasure.valueOf(resultSet.getString("unit_of_measure")),
                             owner
                     );
 
@@ -130,10 +140,10 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Integer countAll(List<String> filter) throws SQLException {
-        var sql = new StringBuilder("SELECT COUNT(*) " +
+        var sql = new StringBuilder("SELECT p.* " +
                 "FROM product p " +
                 "JOIN coordinates c ON p.coordinates_id = c.id " +
-                "JOIN person pe ON p.owner_id = pe.id " +
+                "LEFT JOIN person pe ON p.owner_id = pe.id " +
                 "WHERE 1=1");
 
         if (filter != null) {
@@ -293,9 +303,9 @@ public class ProductRepositoryImpl implements ProductRepository {
                             resultSet.getLong("id"),
                             resultSet.getString("product_name"),
                             coordinates,
-                            resultSet.getDate("creation_date").toLocalDate(),
+                            resultSet.getTimestamp("creation_date").toInstant().atZone(ZoneId.of("UTC")),
                             resultSet.getInt("price"),
-                            UnitOfMeasure.valueOf(resultSet.getString("unit_of_measure")),
+                            resultSet.getString("unit_of_measure") == null ? null : UnitOfMeasure.valueOf(resultSet.getString("unit_of_measure")),
                             owner
                     ));
                 }
@@ -320,7 +330,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
         if (product.getCreationDate() != null) {
             sql.append("creation_date = ?, ");
-            params.add(java.sql.Date.valueOf(product.getCreationDate()));
+            params.add(Timestamp.from(product.getCreationDate().toInstant()));
         }
         if (product.getPrice() != null) {
             sql.append("price = ?, ");
@@ -398,7 +408,7 @@ public class ProductRepositoryImpl implements ProductRepository {
                         resultSet.getLong("id"),
                         resultSet.getString("product_name"),
                         coordinates,
-                        resultSet.getDate("creation_date").toLocalDate(),
+                        resultSet.getTimestamp("creation_date").toInstant().atZone(ZoneId.of("UTC")),
                         resultSet.getInt("price"),
                         UnitOfMeasure.valueOf(resultSet.getString("unit_of_measure")),
                         owner
@@ -418,9 +428,11 @@ public class ProductRepositoryImpl implements ProductRepository {
              var statement = connection.prepareStatement(sql);
              var resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
-                var unitOfMeasure = UnitOfMeasure
-                        .valueOf(resultSet.getString("unit_of_measure"));
-                unitOfMeasures.add(unitOfMeasure);
+                if (resultSet.getString("unit_of_measure") != null) {
+                    var unitOfMeasure = UnitOfMeasure
+                            .valueOf(resultSet.getString("unit_of_measure"));
+                    unitOfMeasures.add(unitOfMeasure);
+                }
             }
         }
 

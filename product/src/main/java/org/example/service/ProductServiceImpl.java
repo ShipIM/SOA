@@ -35,8 +35,10 @@ public class ProductServiceImpl implements ProductService {
             var coordinates = coordinatesRepository.create(product.getCoordinates());
             product.setCoordinates(coordinates);
 
-            var person = personRepository.create(product.getOwner());
-            product.setOwner(person);
+            if (product.getOwner() != null) {
+                var person = personRepository.create(product.getOwner());
+                product.setOwner(person);
+            }
 
             return productRepository.create(product);
         } catch (SQLException e) {
@@ -53,9 +55,13 @@ public class ProductServiceImpl implements ProductService {
                         .orElseThrow(() -> new NotFoundException("there is no coordinates with such an id"));
                 product.setCoordinates(coordinates);
 
-                var person = personRepository.getById(product.getOwner().getId())
-                        .orElseThrow(() -> new NotFoundException("there is no person with such an id"));
-                product.setOwner(person);
+                if (product.getOwner().getId() != 0) {
+                    var person = personRepository.getById(product.getOwner().getId())
+                            .orElseThrow(() -> new NotFoundException("there is no person with such an id " + product.getOwner().getId()));
+                    product.setOwner(person);
+                } else {
+                    product.setOwner(null);
+                }
             }
 
             var totalItems = productRepository.countAll(filter);
@@ -86,9 +92,13 @@ public class ProductServiceImpl implements ProductService {
                     .orElseThrow(() -> new NotFoundException("there is no coordinates with such an id"));
             product.setCoordinates(coordinates);
 
-            var person = personRepository.getById(product.getOwner().getId())
-                    .orElseThrow(() -> new NotFoundException("there is no person with such an id"));
-            product.setOwner(person);
+            if (product.getOwner().getId() != 0) {
+                var person = personRepository.getById(product.getOwner().getId())
+                        .orElseThrow(() -> new NotFoundException("there is no person with such an id"));
+                product.setOwner(person);
+            } else {
+                product.setOwner(null);
+            }
 
             return product;
         } catch (SQLException e) {
@@ -101,11 +111,15 @@ public class ProductServiceImpl implements ProductService {
         try {
             var retrievedProduct = getById(product.getId());
 
-            product.getCoordinates().setId(retrievedProduct.getCoordinates().getId());
-            coordinatesRepository.update(product.getCoordinates());
+            if (product.getCoordinates() != null) {
+                product.getCoordinates().setId(retrievedProduct.getCoordinates().getId());
+                coordinatesRepository.update(product.getCoordinates());
+            }
 
-            product.getOwner().setId(retrievedProduct.getOwner().getId());
-            personRepository.update(product.getOwner());
+            if (retrievedProduct.getOwner().getId() != 0 && product.getOwner() != null) {
+                product.getOwner().setId(retrievedProduct.getOwner().getId());
+                personRepository.update(product.getOwner());
+            }
 
             productRepository.update(product);
         } catch (SQLException e) {
