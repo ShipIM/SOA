@@ -6,7 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.example.model.enumeration.UnitOfMeasure;
 
-import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 @Data
 @Builder
@@ -20,7 +20,7 @@ public class Product {
 
     private Coordinates coordinates;
 
-    private LocalDate creationDate;
+    private ZonedDateTime creationDate;
 
     private Integer price;
 

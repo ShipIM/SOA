@@ -153,60 +153,76 @@ public class ProductController {
 
     private Product mapProductFromRequest(CreateProductRequest request) {
         var product = Product.builder()
-                .productName(request == null ? null : request.getName())
-                .coordinates(request == null ? null : mapCoordinatesFromRequest(request.getCoordinates()))
-                .price(request == null ? null : request.getPrice())
-                .unitOfMeasure(request == null ? null : request.getUnitOfMeasure())
-                .owner(request == null ? null : mapPersonFromRequest(request.getOwner()));
+                .productName(request.getName())
+                .coordinates(mapCoordinatesFromRequest(request.getCoordinates()))
+                .price(request.getPrice())
+                .unitOfMeasure(request.getUnitOfMeasure())
+                .owner(mapPersonFromRequest(request.getOwner()));
 
         return product.build();
     }
 
     private Product mapProductFromRequest(UpdateProductRequest request) {
         var product = Product.builder()
-                .productName(request == null ? null : request.getName())
-                .coordinates(request == null ? null : mapCoordinatesFromRequest(request.getCoordinates()))
-                .price(request == null ? null : request.getPrice())
-                .unitOfMeasure(request == null ? null : request.getUnitOfMeasure())
-                .owner(request == null ? null : mapPersonFromRequest(request.getOwner()));
+                .productName(request.getName())
+                .coordinates(mapCoordinatesFromRequest(request.getCoordinates()))
+                .price(request.getPrice())
+                .unitOfMeasure(request.getUnitOfMeasure())
+                .owner(mapPersonFromRequest(request.getOwner()));
 
         return product.build();
     }
 
     private Coordinates mapCoordinatesFromRequest(CreateCoordinatesRequest request) {
+        if (request == null) {
+            return null;
+        }
+
         var coordinates = Coordinates.builder()
-                .x(request == null ? null : request.getX())
-                .y(request == null ? null : request.getY());
+                .x(request.getX())
+                .y(request.getY());
 
         return coordinates.build();
     }
 
     private Coordinates mapCoordinatesFromRequest(UpdateCoordinatesRequest request) {
+        if (request == null) {
+            return null;
+        }
+
         var coordinates = Coordinates.builder()
-                .x(request == null ? null : request.getX())
-                .y(request == null ? null : request.getY());
+                .x(request.getX())
+                .y(request.getY());
 
         return coordinates.build();
     }
 
     private Person mapPersonFromRequest(CreatePersonRequest request) {
+        if (request == null) {
+            return null;
+        }
+
         var person = Person.builder()
-                .personName(request == null ? null : request.getName())
-                .birthday(request == null ? null : request.getBirthday())
-                .height(request == null ? null : request.getHeight())
-                .eyeColor(request == null ? null : request.getEyeColor())
-                .nationality(request == null ? null : request.getNationality());
+                .personName(request.getName())
+                .birthday(request.getBirthday())
+                .height(request.getHeight())
+                .eyeColor(request.getEyeColor())
+                .nationality(request.getNationality());
 
         return person.build();
     }
 
     private Person mapPersonFromRequest(UpdatePersonRequest request) {
+        if (request == null) {
+            return null;
+        }
+
         var person = Person.builder()
-                .personName(request == null ? null : request.getName())
-                .birthday(request == null ? null : request.getBirthday())
-                .height(request == null ? null : request.getHeight())
-                .eyeColor(request == null ? null : request.getEyeColor())
-                .nationality(request == null ? null : request.getNationality());
+                .personName(request.getName())
+                .birthday(request.getBirthday())
+                .height(request.getHeight())
+                .eyeColor(request.getEyeColor())
+                .nationality(request.getNationality());
 
         return person.build();
     }
@@ -231,6 +247,10 @@ public class ProductController {
     }
 
     private PersonResponse mapPersonToResponse(Person person) {
+        if (person == null) {
+            return null;
+        }
+
         return new PersonResponse(
                 person.getPersonName(),
                 person.getBirthday(),
