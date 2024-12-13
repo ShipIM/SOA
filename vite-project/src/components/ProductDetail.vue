@@ -45,7 +45,7 @@
     methods: {
       fetchProduct() {
         const id = this.$route.params.id;
-        axios.get(`https://localhost:8443/first-service/api/v1/products/${id}`)
+        axios.get(`https://localhost:8080/first-service/api/v1/products/${id}`)
           .then(response => {
             this.product = response.data;
             this.errorMessage = '';
@@ -61,7 +61,7 @@
       },
       deleteProduct(id) {
         if (confirm('Are you sure you want to delete this product?')) {
-          axios.delete(`https://localhost:8443/first-service/api/v1/products/${id}`)
+          axios.delete(`https://localhost:8080/first-service/api/v1/products/${id}`)
             .then(() => {
               this.$router.push({ name: 'Products' });
             })

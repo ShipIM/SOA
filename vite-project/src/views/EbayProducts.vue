@@ -50,13 +50,15 @@
       <tbody>
         <tr v-for="product in products" :key="product.id">
           <td>{{ product.id }}</td>
-          <td>{{ product.name }}</td>
+          <td class="ellipsis" :title="product.name">{{ product.name }}</td>
           <td>{{ product.price }}</td>
           <td>{{ new Date(product.creation_date).toLocaleDateString() }}</td>
           <td>{{ product.unit_of_measure }}</td>
           <td>{{ product.coordinates.x }}</td>
           <td>{{ product.coordinates.y }}</td>
-          <td>{{ product.owner ? product.owner.name : 'N/A' }}</td>
+          <td class="ellipsis" :title="product.owner ? product.owner.name : 'N/A'">
+            {{ product.owner ? product.owner.name : 'N/A' }}
+          </td>
           <td>{{ product.owner ? product.owner.height : 'N/A' }}</td>
           <td>{{ product.owner.birthday ? new Date(product.owner.birthday).toLocaleDateString() : 'N/A' }}</td>
           <td>{{ product.owner ? product.owner.eye_color : 'N/A' }}</td>
@@ -66,6 +68,7 @@
             <button @click="deleteProduct(product.id)">Delete</button>
           </td>
         </tr>
+
       </tbody>
     </table>
 
@@ -119,7 +122,7 @@ export default {
   },
   methods: {
     filterByPrice() {
-      axios.get(`https://localhost:8443/second-service/api/v1/ebay/filter/price/${this.priceFrom}/${this.priceTo}?page=${this.page}&size=${this.pageSize}`)
+      axios.get(`https://localhost:8080/second-service/api/v1/ebay/filter/price/${this.priceFrom}/${this.priceTo}?page=${this.page}&size=${this.pageSize}`)
         .then(response => {
           this.products = response.data.data;
           this.page = response.data.meta.current_page;
@@ -148,7 +151,7 @@ export default {
       }
     },
     increasePrices() {
-      axios.post(`https://localhost:8443/second-service/api/v1/ebay/price/increase/${this.increasePercent}`)
+      axios.post(`https://localhost:8080/second-service/api/v1/ebay/price/increase/${this.increasePercent}`)
         .then(() => {
           this.successMessage = 'Prices increased successfully!';
           setTimeout(() => {
@@ -170,7 +173,7 @@ export default {
     },
     deleteProduct(productId) {
       if (confirm('Are you sure you want to delete this product?')) {
-        axios.delete(`https://localhost:8443/first-service/api/v1/products/${productId}`)
+        axios.delete(`https://localhost:8080/first-service/api/v1/products/${productId}`)
           .then(() => {
             this.successMessage = 'Product deleted successfully!';
             setTimeout(() => {
