@@ -29,6 +29,9 @@ import javax.validation.constraints.Positive;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -232,7 +235,8 @@ public class ProductController {
                 product.getId(),
                 product.getProductName(),
                 mapCoordinatesToResponse(product.getCoordinates()),
-                product.getCreationDate(),
+                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:m:ss.SSSXXX").withZone(ZoneId.from(ZoneOffset.UTC)).
+                        format(product.getCreationDate().toInstant().atZone(ZoneOffset.UTC)),
                 product.getPrice(),
                 product.getUnitOfMeasure(),
                 mapPersonToResponse(product.getOwner())

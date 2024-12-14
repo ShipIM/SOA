@@ -15,6 +15,10 @@ import org.example.model.enumeration.UnitOfMeasure;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
@@ -39,7 +43,7 @@ public class ProductServiceImpl implements ProductService {
                 var person = personRepository.create(product.getOwner());
                 product.setOwner(person);
             }
-
+            product.setCreationDate(ZonedDateTime.ofInstant(new Date().toInstant(), ZoneOffset.UTC));
             return productRepository.create(product);
         } catch (SQLException e) {
             throw new InternalServerErrorException("something went wrong on adding product: " + e.getMessage());

@@ -25,9 +25,9 @@ public class ProductResponse {
     private CoordinatesResponse coordinates;
 
     @JsonProperty("creation_date")
-    @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @JsonSerialize(using = ZonedDateTimeSerializer.class)
-    private ZonedDateTime creationDate;
+//    @JsonFormat(shape = JsonFormat.Shape.STRING)
+//    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    private String creationDate;
 
     private Integer price;
 
