@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class ProductGatewayImpl implements ProductGateway {
 
-    private final String baseUrl = "http://localhost:8080/first-service/api/v1";
+    private final String baseUrl = "http://localhost:10011/first-service/api/v1";
 
     @Override
     public Pair<List<Product>, Meta> fetchProducts(List<Pair<String, String>> filters, Integer page, Integer size) {
@@ -77,7 +77,7 @@ public class ProductGatewayImpl implements ProductGateway {
                 .request(MediaType.APPLICATION_JSON)
                 .method("patch", Entity.entity(productRequest, MediaType.APPLICATION_JSON))) {
             if (response.getStatus() != 204) {
-                throw new ServiceUnavailableException("failed to update product: " + product.getOwner().getBirthday());
+                throw new ServiceUnavailableException("failed to update product: " + response.getStatus() + " " + url);
             }
         }
     }
@@ -87,7 +87,6 @@ public class ProductGatewayImpl implements ProductGateway {
                 response.getId(),
                 response.getName(),
                 mapCoordinatesFromResponse(response.getCoordinates()),
-                response.getCreationDate(),
                 response.getPrice(),
                 response.getUnitOfMeasure(),
                 mapPersonFromResponse(response.getOwner())
@@ -104,7 +103,6 @@ public class ProductGatewayImpl implements ProductGateway {
     private Person mapPersonFromResponse(PersonResponse response) {
         return new Person(
                 response.getName(),
-                response.getBirthday(),
                 response.getHeight(),
                 response.getEyeColor(),
                 response.getNationality()
@@ -140,7 +138,6 @@ public class ProductGatewayImpl implements ProductGateway {
     private PersonRequest mapPersonToRequest(Person person) {
         return new PersonRequest(
                 person.getPersonName(),
-                person.getBirthday(),
                 person.getHeight(),
                 person.getEyeColor(),
                 person.getNationality()

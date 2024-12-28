@@ -65,7 +65,6 @@ public class EbayController {
                 product.getId(),
                 product.getProductName(),
                 mapCoordinatesToResponse(product.getCoordinates()),
-                product.getCreationDate(),
                 product.getPrice(),
                 product.getUnitOfMeasure(),
                 mapPersonToResponse(product.getOwner())
@@ -82,7 +81,6 @@ public class EbayController {
     private PersonResponse mapPersonToResponse(Person person) {
         return new PersonResponse(
                 person.getPersonName(),
-                person.getBirthday(),
                 person.getHeight(),
                 person.getEyeColor(),
                 person.getNationality()

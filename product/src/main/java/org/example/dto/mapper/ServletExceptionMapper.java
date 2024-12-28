@@ -1,23 +1,22 @@
 package org.example.dto.mapper;
 
-import com.fasterxml.jackson.core.JsonParseException;
-
 import javax.json.Json;
 import javax.json.JsonObject;
+import javax.servlet.ServletException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.ext.ExceptionMapper;
 import javax.ws.rs.ext.Provider;
 
 @Provider
-public class ParseExceptionMapper implements ExceptionMapper<JsonParseException> {
+public class ServletExceptionMapper implements ExceptionMapper<ServletException> {
 
     @Override
-    public Response toResponse(JsonParseException exception) {
+    public Response toResponse(ServletException exception) {
         var jsonObject = Json.createObjectBuilder();
 
         var jsonArray = Json.createArrayBuilder();
 
-        var errorMessage = "invalid json format";
+        var errorMessage = "invalid format: " + exception.getMessage();
 
         JsonObject errorResponse = Json.createObjectBuilder()
                 .add("message", errorMessage)
@@ -32,4 +31,3 @@ public class ParseExceptionMapper implements ExceptionMapper<JsonParseException>
     }
 
 }
-

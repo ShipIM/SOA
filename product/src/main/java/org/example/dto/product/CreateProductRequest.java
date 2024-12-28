@@ -1,6 +1,5 @@
 package org.example.dto.product;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,6 +7,7 @@ import org.example.dto.coordinates.CreateCoordinatesRequest;
 import org.example.dto.person.CreatePersonRequest;
 import org.example.model.enumeration.UnitOfMeasure;
 
+import javax.json.bind.annotation.JsonbProperty;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -30,7 +30,7 @@ public class CreateProductRequest {
     @Positive(message = "price must be greater than 0")
     private Integer price;
 
-    @JsonProperty("unit_of_measure")
+    @JsonbProperty("unit_of_measure")
     private UnitOfMeasure unitOfMeasure;
 
     @Valid

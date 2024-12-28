@@ -1,25 +1,26 @@
 package org.example.dto.meta;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.json.bind.annotation.JsonbProperty;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MetaResponse {
 
-    @JsonProperty("current_page")
+    @JsonbProperty("current_page")
     private Integer currentPage;
 
-    @JsonProperty("total_pages")
+    @JsonbProperty("total_pages")
     private Integer totalPages;
 
-    @JsonProperty("page_size")
+    @JsonbProperty("page_size")
     private Integer pageSize;
 
-    @JsonProperty("total_items")
+    @JsonbProperty("total_items")
     private Integer totalItems;
 
 }

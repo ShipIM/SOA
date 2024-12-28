@@ -1,9 +1,5 @@
 package org.example.dto.product;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,6 +7,8 @@ import org.example.dto.coordinates.CoordinatesResponse;
 import org.example.dto.person.PersonResponse;
 import org.example.model.enumeration.UnitOfMeasure;
 
+import javax.json.bind.annotation.JsonbDateFormat;
+import javax.json.bind.annotation.JsonbProperty;
 import java.time.ZonedDateTime;
 
 @Data
@@ -24,16 +22,14 @@ public class ProductResponse {
 
     private CoordinatesResponse coordinates;
 
-    @JsonProperty("creation_date")
-//    @JsonFormat(shape = JsonFormat.Shape.STRING)
-//    @JsonSerialize(using = ZonedDateTimeSerializer.class)
-    private String creationDate;
+    @JsonbProperty("creation_date")
+    @JsonbDateFormat("yyyy-MM-dd'T'HH:m:ss.SSSXXX")
+    private ZonedDateTime creationDate;
 
     private Integer price;
 
-    @JsonProperty("unit_of_measure")
+    @JsonbProperty("unit_of_measure")
     private UnitOfMeasure unitOfMeasure;
 
     private PersonResponse owner;
-
 }

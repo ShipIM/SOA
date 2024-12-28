@@ -11,11 +11,11 @@
         <p><strong>Unit of Measure:</strong> {{ product.unit_of_measure || 'N/A' }}</p>
         
         <h2>Owner Details</h2>
-        <p><strong>Name:</strong> {{ product.owner.name }}</p>
-        <p><strong>Height:</strong> {{ product.owner.height }}</p>
-        <p><strong>Birthday:</strong> {{ product.owner.birthday ? new Date(product.owner.birthday).toLocaleDateString() : 'N/A' }}</p>
-        <p><strong>Eye Color:</strong> {{ product.owner.eye_color }}</p>
-        <p><strong>Nationality:</strong> {{ product.owner.nationality }}</p>
+        <p><strong>Name:</strong> {{ product.owner ? product.owner.name : 'N/A' }}</p>
+        <p><strong>Height:</strong> {{ product.owner ? product.owner.height : 'N/A' }}</p>
+        <p><strong>Birthday:</strong> {{ product.owner && product.owner.birthday ? new Date(product.owner.birthday).toLocaleDateString() : 'N/A' }}</p>
+        <p><strong>Eye Color:</strong> {{ product.owner ? product.owner.eye_color : 'N/A' }}</p>
+        <p><strong>Nationality:</strong> {{ product.owner ?product.owner.nationality : 'N/A' }}</p>
         
         <div>
           <router-link :to="{ name: 'ProductUpdate', params: { id: product.id } }">
@@ -45,7 +45,7 @@
     methods: {
       fetchProduct() {
         const id = this.$route.params.id;
-        axios.get(`https://localhost:8080/first-service/api/v1/products/${id}`)
+        axios.get(`https://localhost:8443/first-service/api/v1/products/${id}`)
           .then(response => {
             this.product = response.data;
             this.errorMessage = '';
@@ -61,7 +61,7 @@
       },
       deleteProduct(id) {
         if (confirm('Are you sure you want to delete this product?')) {
-          axios.delete(`https://localhost:8080/first-service/api/v1/products/${id}`)
+          axios.delete(`https://localhost:8443/first-service/api/v1/products/${id}`)
             .then(() => {
               this.$router.push({ name: 'Products' });
             })

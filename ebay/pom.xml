@@ -16,7 +16,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.target>11</maven.compiler.target>
         <maven.compiler.source>11</maven.compiler.source>
-        <mapstruct.version>1.5.3.Final</mapstruct.version>
         <java.version>11</java.version>
     </properties>
 
@@ -90,17 +89,17 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                            <version>1.18.22</version>
+                            <version>1.18.36</version>
                         </path>
                         <path>
                             <groupId>com.fasterxml.jackson.datatype</groupId>
                             <artifactId>jackson-datatype-jsr310</artifactId>
-                            <version>2.14.0</version>
+                            <version>2.18.2</version>
                         </path>
                         <path>
                             <groupId>com.fasterxml.jackson.core</groupId>
                             <artifactId>jackson-databind</artifactId>
-                            <version>2.14.0</version>
+                            <version>2.18.2</version>
                         </path>
                         <path>
                             <groupId>org.jboss.resteasy</groupId>

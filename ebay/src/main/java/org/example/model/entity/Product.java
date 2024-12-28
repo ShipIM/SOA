@@ -20,8 +20,6 @@ public class Product {
 
     private Coordinates coordinates;
 
-    private ZonedDateTime creationDate;
-
     private Integer price;
 
     private UnitOfMeasure unitOfMeasure;

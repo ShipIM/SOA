@@ -13,7 +13,7 @@ import java.util.Optional;
 @ApplicationScoped
 public class CoordinatesRepositoryImpl implements CoordinatesRepository {
 
-    @Resource(lookup = "java:/jdbc/datasource")
+    @Resource(lookup = "jdbc/datasource")
     private DataSource dataSource;
 
     @Override

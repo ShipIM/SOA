@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class ProductRepositoryImpl implements ProductRepository {
 
-    @Resource(lookup = "java:/jdbc/datasource")
+    @Resource(lookup = "jdbc/datasource")
     private DataSource dataSource;
 
     @Override

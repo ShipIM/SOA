@@ -20,7 +20,7 @@ CREATE TABLE product
     id SERIAL PRIMARY KEY,
     product_name TEXT NOT NULL CHECK (product_name <> ''),
     coordinates_id INT NOT NULL REFERENCES coordinates (id) ON DELETE CASCADE ON UPDATE CASCADE,
-    creation_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    creation_date TIMESTAMP NOT NULL,
     price INT NOT NULL CHECK (price > 0),
     unit_of_measure TEXT,
     owner_id INT REFERENCES person (id) ON DELETE CASCADE ON UPDATE CASCADE

@@ -25,7 +25,7 @@
     },
     methods: {
       deleteProductsByPrice() {
-        axios.delete(`https://localhost:8080/first-service/api/v1/products/price/${this.price}`)
+        axios.delete(`https://localhost:8443/first-service/api/v1/products/price/${this.price}`)
           .then(() => {
             alert('Products deleted successfully!');
             this.price = null;

@@ -17,8 +17,6 @@ public class Person {
 
     private String personName;
 
-    private LocalDate birthday;
-
     private Double height;
 
     private Color eyeColor;
