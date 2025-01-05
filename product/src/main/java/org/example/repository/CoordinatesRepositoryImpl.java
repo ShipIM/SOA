@@ -2,6 +2,8 @@ package org.example.repository;
 
 import org.example.api.repository.CoordinatesRepository;
 import org.example.model.entity.Coordinates;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
@@ -11,9 +13,10 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @ApplicationScoped
+@Repository
 public class CoordinatesRepositoryImpl implements CoordinatesRepository {
 
-    @Resource(lookup = "java:/jdbc/datasource")
+    @Autowired
     private DataSource dataSource;
 
     @Override

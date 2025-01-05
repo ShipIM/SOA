@@ -2,11 +2,13 @@ package org.example.api.repository;
 
 import org.example.model.entity.Product;
 import org.example.model.enumeration.UnitOfMeasure;
+import org.springframework.stereotype.Repository;
 
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
+@Repository
 public interface ProductRepository {
 
     Product create(Product product) throws SQLException;

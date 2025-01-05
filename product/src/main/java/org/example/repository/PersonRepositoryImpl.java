@@ -4,6 +4,8 @@ import org.example.api.repository.PersonRepository;
 import org.example.model.entity.Person;
 import org.example.model.enumeration.Color;
 import org.example.model.enumeration.Country;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
@@ -14,9 +16,10 @@ import java.util.ArrayList;
 import java.util.Optional;
 
 @ApplicationScoped
+@Repository
 public class PersonRepositoryImpl implements PersonRepository {
 
-    @Resource(lookup = "java:/jdbc/datasource")
+    @Autowired
     private DataSource dataSource;
 
     @Override

@@ -11,6 +11,8 @@ import org.example.exception.NotFoundException;
 import org.example.model.entity.Meta;
 import org.example.model.entity.Product;
 import org.example.model.enumeration.UnitOfMeasure;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
@@ -22,6 +24,7 @@ import java.util.Date;
 import java.util.List;
 
 @ApplicationScoped
+@Service
 public class ProductServiceImpl implements ProductService {
 
     @Inject

@@ -5,6 +5,8 @@ import org.example.model.entity.Coordinates;
 import org.example.model.entity.Person;
 import org.example.model.entity.Product;
 import org.example.model.enumeration.UnitOfMeasure;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
@@ -20,9 +22,10 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
+@Repository
 public class ProductRepositoryImpl implements ProductRepository {
 
-    @Resource(lookup = "java:/jdbc/datasource")
+    @Autowired
     private DataSource dataSource;
 
     @Override
