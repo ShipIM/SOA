@@ -11,13 +11,11 @@ import org.example.exception.NotFoundException;
 import org.example.model.entity.Meta;
 import org.example.model.entity.Product;
 import org.example.model.enumeration.UnitOfMeasure;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;

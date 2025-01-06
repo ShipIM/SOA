@@ -43,7 +43,7 @@
     },
     methods: {
       fetchCountries() {
-        axios.get('https://localhost:8443/first-service/api/v1/products/country')
+        axios.get('https://localhost:8080/first-service/api/v1/products/country')
           .then(response => {
             this.countries = response.data;
             this.errorMessage = '';

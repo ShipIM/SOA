@@ -228,8 +228,8 @@ export default {
         null;
 
       const endpoint = sort === null
-        ? `https://localhost:8443/first-service/api/v1/products/?page=${this.page}&size=${this.size}${filters}`
-        : `https://localhost:8443/first-service/api/v1/products/?page=${this.page}&size=${this.size}&sort=${sort}${filters}`;
+        ? `https://localhost:8080/first-service/api/v1/products/?page=${this.page}&size=${this.size}${filters}`
+        : `https://localhost:8080/first-service/api/v1/products/?page=${this.page}&size=${this.size}&sort=${sort}${filters}`;
 
       axios.get(endpoint)
         .then(response => {
@@ -248,7 +248,7 @@ export default {
     },
     deleteProduct(id) {
       if (confirm('Are you sure you want to delete this product?')) {
-        axios.delete(`https://localhost:8443/first-service/api/v1/products/${id}`)
+        axios.delete(`https://localhost:8080/first-service/api/v1/products/${id}`)
           .then(() => {
             this.successMessage = 'Product deleted successfully!';
             setTimeout(() => {

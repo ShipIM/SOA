@@ -122,7 +122,7 @@ export default {
   },
   methods: {
     filterByPrice() {
-      axios.get(`https://localhost:8443/second-service/api/v1/ebay/filter/price/${this.priceFrom}/${this.priceTo}?page=${this.page}&size=${this.pageSize}`)
+      axios.get(`https://localhost:8080/second-service/api/v1/ebay/filter/price/${this.priceFrom}/${this.priceTo}?page=${this.page}&size=${this.pageSize}`)
         .then(response => {
           this.products = response.data.data;
           this.page = response.data.meta.current_page;
@@ -151,7 +151,7 @@ export default {
       }
     },
     increasePrices() {
-      axios.post(`https://localhost:8443/second-service/api/v1/ebay/price/increase/${this.increasePercent}`)
+      axios.post(`https://localhost:8080/second-service/api/v1/ebay/price/increase/${this.increasePercent}`)
         .then(() => {
           this.successMessage = 'Prices increased successfully!';
           setTimeout(() => {
@@ -173,7 +173,7 @@ export default {
     },
     deleteProduct(productId) {
       if (confirm('Are you sure you want to delete this product?')) {
-        axios.delete(`https://localhost:8443/first-service/api/v1/products/${productId}`)
+        axios.delete(`https://localhost:8080/first-service/api/v1/products/${productId}`)
           .then(() => {
             this.successMessage = 'Product deleted successfully!';
             setTimeout(() => {

@@ -94,7 +94,7 @@ export default {
   methods: {
     fetchProduct() {
       const id = this.$route.params.id;
-      axios.get(`https://localhost:8443/first-service/api/v1/products/${id}`)
+      axios.get(`https://localhost:8080/first-service/api/v1/products/${id}`)
         .then(response => {
           this.product = response.data;
           this.errorMessage = '';
@@ -109,7 +109,7 @@ export default {
         });
     },
     fetchUnits() {
-      axios.get('https://localhost:8443/first-service/api/v1/products/measure')
+      axios.get('https://localhost:8080/first-service/api/v1/products/measure')
         .then(response => {
           this.units = response.data;
         })
@@ -118,7 +118,7 @@ export default {
         });
     },
     fetchEyeColors() {
-      axios.get('https://localhost:8443/first-service/api/v1/products/color')
+      axios.get('https://localhost:8080/first-service/api/v1/products/color')
         .then(response => {
           this.eyeColors = response.data;
         })
@@ -127,7 +127,7 @@ export default {
         });
     },
     fetchCountries() {
-      axios.get('https://localhost:8443/first-service/api/v1/products/country')
+      axios.get('https://localhost:8080/first-service/api/v1/products/country')
         .then(response => {
           this.countries = response.data;
         })
@@ -137,7 +137,7 @@ export default {
     },
     submitForm() {
       const method = this.isEdit ? 'patch' : 'post';
-      const url = this.isEdit ? `https://localhost:8443/first-service/api/v1/products/${this.product.id}` : 'https://localhost:8443/first-service/api/v1/products';
+      const url = this.isEdit ? `https://localhost:8080/first-service/api/v1/products/${this.product.id}` : 'https://localhost:8080/first-service/api/v1/products';
 
       const { id, creation_date, ...productWithoutIdAndDate } = this.product;
 

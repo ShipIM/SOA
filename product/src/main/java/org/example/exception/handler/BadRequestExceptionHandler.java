@@ -1,7 +1,6 @@
 package org.example.exception.handler;
 
 import org.example.exception.BadRequestException;
-import org.example.exception.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
