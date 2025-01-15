@@ -1,0 +1,16 @@
+{
+  "datacenter": "dc1",
+  "node_name": "consul-server1",
+  "server": true,
+  "ui_config": {
+    "enabled": true
+  },
+  "data_dir": "/tmp",
+  "addresses": {
+    "http": "0.0.0.0"
+  },
+  "client_addr": "0.0.0.0",
+  "connect": {
+    "enabled": true
+  }
+}

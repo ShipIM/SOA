@@ -1,21 +1,15 @@
 version: "3.8"
 
 services:
-  consul:
-    image: consul:1.15.4
-    container_name: consul
+  combined_service:
+    build: .
+    container_name: combined_service
     restart: always
     ports:
       - "8500:8500"
-      - "8600:8600/tcp"
-      - "8600:8600/udp"
-  haproxy:
-    image: haproxy:2.2-alpine
-    container_name: haproxy
-    restart: always
-    volumes:
-      - ./haproxy/haproxy.cfg:/usr/local/etc/haproxy/haproxy.cfg:ro
-      - ./haproxy/ssl/cert.pem:/etc/ssl/certs/cert.pem:ro
-    ports:
       - "8080:80"
       - "9090:9090"
+    volumes:
+      - ./haproxy/ssl/cert.pem:/etc/ssl/certs/custom_cert.pem:ro
+      - ./haproxy/consul_config.hcl:/etc/consul/consul_config.hcl:ro
+      - ./haproxy/haproxy.cfg:/haproxy.conf.tmpl:ro
