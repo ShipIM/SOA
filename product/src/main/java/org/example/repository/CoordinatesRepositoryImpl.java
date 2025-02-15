@@ -1,9 +1,9 @@
 package org.example.repository;
 
+import jakarta.annotation.Resource;
 import org.example.api.repository.CoordinatesRepository;
 import org.example.model.entity.Coordinates;
 
-import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.sql.DataSource;
 import java.sql.SQLException;

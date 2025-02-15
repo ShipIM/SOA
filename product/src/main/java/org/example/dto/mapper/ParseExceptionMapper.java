@@ -1,35 +1,28 @@
 package org.example.dto.mapper;
 
 import com.fasterxml.jackson.core.JsonParseException;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
+import org.example.dto.error.ErrorDetail;
+import org.example.dto.error.ErrorResponse;
 
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import java.util.List;
 
 @Provider
 public class ParseExceptionMapper implements ExceptionMapper<JsonParseException> {
 
     @Override
     public Response toResponse(JsonParseException exception) {
-        var jsonObject = Json.createObjectBuilder();
-
-        var jsonArray = Json.createArrayBuilder();
-
         var errorMessage = "invalid json format";
 
-        JsonObject errorResponse = Json.createObjectBuilder()
-                .add("message", errorMessage)
-                .build();
-        jsonArray.add(errorResponse);
+        var errorDetail = new ErrorDetail(null, errorMessage);
 
-        var errorJsonEntity = jsonObject.add("errors", jsonArray.build()).build();
+        var errorResponse = new ErrorResponse(List.of(errorDetail));
 
         return Response.status(Response.Status.BAD_REQUEST)
-                .entity(errorJsonEntity)
+                .entity(errorResponse)
                 .build();
     }
 
 }
-

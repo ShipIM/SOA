@@ -1,5 +1,11 @@
 package org.example.controller;
 
+import jakarta.inject.Inject;
+import jakarta.jws.WebMethod;
+import jakarta.jws.WebService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import org.example.api.service.ProductService;
 import org.example.dto.coordinates.CoordinatesResponse;
 import org.example.dto.coordinates.CreateCoordinatesRequest;
@@ -21,44 +27,27 @@ import org.example.model.enumeration.Color;
 import org.example.model.enumeration.Country;
 import org.example.model.enumeration.UnitOfMeasure;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Positive;
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@ApplicationScoped
-@Path("/products")
-@Produces(MediaType.APPLICATION_JSON)
-@Consumes(MediaType.APPLICATION_JSON)
+@WebService
 public class ProductController {
 
     @Inject
     private ProductService productService;
 
-    @POST
-    public Response addProduct(@Valid CreateProductRequest request) {
+    @WebMethod
+    public ProductResponse addProduct(@Valid CreateProductRequest request) {
         var product = mapProductFromRequest(request);
-
         product = productService.add(product);
-
-        var response = mapProductToResponse(product);
-
-        return Response.status(Response.Status.CREATED).entity(response).build();
+        return mapProductToResponse(product);
     }
 
-    @GET
-    public Response findAll(@Valid @BeanParam PaginationRequest paginationRequest,
-                            @QueryParam("sort") List<String> sort,
-                            @QueryParam("filter") List<String> filter) {
+    @WebMethod
+    public ProductListResponse findAll(@Valid PaginationRequest paginationRequest, List<String> sort, List<String> filter) {
         var result = productService.findAll(
                 paginationRequest.getPage(),
                 paginationRequest.getSize(),
@@ -70,88 +59,56 @@ public class ProductController {
                 .collect(Collectors.toList());
         var meta = mapMetaToResponse(result.getValue());
 
-        var response = new ProductListResponse(products, meta);
-
-        return Response.ok().entity(response).build();
+        return new ProductListResponse(products, meta);
     }
 
-    @GET
-    @Path("/{id}")
-    public Response getProduct(@PathParam("id") Long id) {
+    @WebMethod
+    public ProductResponse getProduct(@NotNull Long id) {
         var product = productService.getById(id);
-
-        var response = mapProductToResponse(product);
-
-        return Response.ok(response).build();
+        return mapProductToResponse(product);
     }
 
-    @PATCH
-    @Path("/{id}")
-    public Response updateProduct(@PathParam("id") Long id, @Valid @NotNull UpdateProductRequest request) {
+    @WebMethod
+    public void updateProduct(@NotNull Long id, @Valid @NotNull UpdateProductRequest request) {
         var product = mapProductFromRequest(request);
         product.setId(id);
-
         productService.update(product);
-
-        return Response.noContent().build();
     }
 
-    @DELETE
-    @Path("/{id}")
-    public Response deleteProduct(@PathParam("id") Long id) {
+    @WebMethod
+    public void deleteProduct(@NotNull Long id) {
         productService.delete(id);
-
-        return Response.noContent().build();
     }
 
-    @GET
-    @Path("/measurements/unique")
-    public Response getUniqueMeasurements() {
-        var uniqueMeasurements = productService.getUniqueUnitOfMeasure();
-
-        return Response.ok(uniqueMeasurements).build();
+    @WebMethod
+    public List<UnitOfMeasure> getUniqueMeasurements() {
+        return productService.getUniqueUnitOfMeasure();
     }
 
-    @GET
-    @Path("/color")
-    public Response getColors() {
-        var colors = List.of(Color.values());
-
-        return Response.ok(colors).build();
+    @WebMethod
+    public List<Color> getColors() {
+        return List.of(Color.values());
     }
 
-    @GET
-    @Path("/country")
-    public Response getCountries() {
-        var countries = List.of(Country.values());
-
-        return Response.ok(countries).build();
+    @WebMethod
+    public List<Country> getCountries() {
+        return List.of(Country.values());
     }
 
-    @GET
-    @Path("/measure")
-    public Response getMeasures() {
-        var measures = List.of(UnitOfMeasure.values());
-
-        return Response.ok(measures).build();
+    @WebMethod
+    public List<UnitOfMeasure> getMeasures() {
+        return List.of(UnitOfMeasure.values());
     }
 
-    @DELETE
-    @Path("/price/{price}")
-    public Response deleteProductsByPrice(@PathParam("price") @Positive Integer price) {
+    @WebMethod
+    public void deleteProductsByPrice(@Positive Integer price) {
         productService.deleteByPrice(price);
-
-        return Response.noContent().build();
     }
 
-    @GET
-    @Path("/dates/min")
-    public Response getEarliestProduct() {
+    @WebMethod
+    public ProductResponse getEarliestProduct() {
         var product = productService.getMinCreationDate();
-
-        var response = mapProductToResponse(product);
-
-        return Response.ok(response).build();
+        return mapProductToResponse(product);
     }
 
     private Product mapProductFromRequest(CreateProductRequest request) {
@@ -257,7 +214,7 @@ public class ProductController {
 
         return new PersonResponse(
                 person.getPersonName(),
-                person.getBirthday(),
+                person.getBirthday().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
                 person.getHeight(),
                 person.getEyeColor(),
                 person.getNationality()

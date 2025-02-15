@@ -1,11 +1,11 @@
 package org.example.repository;
 
+import jakarta.annotation.Resource;
 import org.example.api.repository.PersonRepository;
 import org.example.model.entity.Person;
 import org.example.model.enumeration.Color;
 import org.example.model.enumeration.Country;
 
-import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.sql.DataSource;
 import java.sql.Date;

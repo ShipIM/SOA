@@ -1,12 +1,12 @@
 package org.example.repository;
 
+import jakarta.annotation.Resource;
 import org.example.api.repository.ProductRepository;
 import org.example.model.entity.Coordinates;
 import org.example.model.entity.Person;
 import org.example.model.entity.Product;
 import org.example.model.enumeration.UnitOfMeasure;
 
-import javax.annotation.Resource;
 import javax.enterprise.context.ApplicationScoped;
 import javax.sql.DataSource;
 import java.sql.SQLException;

@@ -1,9 +1,9 @@
 package org.example.dto.product;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.ZonedDateTimeSerializer;
+import jakarta.xml.bind.annotation.XmlAccessType;
+import jakarta.xml.bind.annotation.XmlAccessorType;
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,29 +11,32 @@ import org.example.dto.coordinates.CoordinatesResponse;
 import org.example.dto.person.PersonResponse;
 import org.example.model.enumeration.UnitOfMeasure;
 
-import java.time.ZonedDateTime;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@XmlRootElement
+@XmlAccessorType(XmlAccessType.FIELD)
 public class ProductResponse {
 
+    @XmlElement(required = true)
     private Long id;
 
+    @XmlElement(required = true)
     private String name;
 
+    @XmlElement(required = true)
     private CoordinatesResponse coordinates;
 
-    @JsonProperty("creation_date")
-//    @JsonFormat(shape = JsonFormat.Shape.STRING)
-//    @JsonSerialize(using = ZonedDateTimeSerializer.class)
+    @XmlElement(name = "creation_date", required = true)
     private String creationDate;
 
+    @XmlElement(required = true)
     private Integer price;
 
-    @JsonProperty("unit_of_measure")
+    @XmlElement(name = "unit_of_measure", required = true)
     private UnitOfMeasure unitOfMeasure;
 
+    @XmlElement(required = true)
     private PersonResponse owner;
 
 }

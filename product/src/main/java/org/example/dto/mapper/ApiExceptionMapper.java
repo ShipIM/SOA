@@ -1,32 +1,28 @@
 package org.example.dto.mapper;
 
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
 import org.example.api.exception.ApiException;
+import org.example.dto.error.ErrorDetail;
+import org.example.dto.error.ErrorResponse;
 
-import javax.json.Json;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import java.util.List;
 
 @Provider
 public class ApiExceptionMapper implements ExceptionMapper<ApiException> {
 
     @Override
     public Response toResponse(ApiException exception) {
-        var message = exception.getMessage();
+        var errorDetail = new ErrorDetail(
+                null,
+                exception.getMessage()
+        );
 
-        var jsonObject = Json.createObjectBuilder();
-
-        var jsonArray = Json.createArrayBuilder();
-
-        var jsonError = Json.createObjectBuilder()
-                .add("message", message)
-                .build();
-        jsonArray.add(jsonError);
-
-        var errorJsonEntity = jsonObject.add("errors", jsonArray.build()).build();
+        var errorResponse = new ErrorResponse(List.of(errorDetail));
 
         return Response.status(exception.getStatusCode())
-                .entity(errorJsonEntity)
+                .entity(errorResponse)
                 .build();
     }
 

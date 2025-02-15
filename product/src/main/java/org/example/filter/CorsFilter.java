@@ -1,8 +1,8 @@
 package org.example.filter;
 
-import javax.ws.rs.container.*;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.Provider;
+import jakarta.ws.rs.container.*;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.Provider;
 
 @Provider
 @PreMatching

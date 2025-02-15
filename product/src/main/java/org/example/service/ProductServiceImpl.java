@@ -15,7 +15,6 @@ import org.example.model.enumeration.UnitOfMeasure;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;

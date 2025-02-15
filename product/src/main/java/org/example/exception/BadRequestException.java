@@ -1,8 +1,7 @@
 package org.example.exception;
 
+import jakarta.ws.rs.core.Response;
 import org.example.api.exception.ApiException;
-
-import javax.ws.rs.core.Response;
 
 public class BadRequestException extends ApiException {
 

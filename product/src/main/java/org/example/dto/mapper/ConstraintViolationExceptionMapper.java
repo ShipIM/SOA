@@ -1,36 +1,37 @@
 package org.example.dto.mapper;
 
-import javax.json.Json;
-import javax.validation.ConstraintViolationException;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.ext.ExceptionMapper;
-import javax.ws.rs.ext.Provider;
+import jakarta.validation.ConstraintViolationException;
+import jakarta.ws.rs.core.Response;
+import jakarta.ws.rs.ext.ExceptionMapper;
+import jakarta.ws.rs.ext.Provider;
+import org.example.dto.error.ErrorDetail;
+import org.example.dto.error.ErrorResponse;
+
+import java.util.stream.Collectors;
 
 @Provider
 public class ConstraintViolationExceptionMapper implements ExceptionMapper<ConstraintViolationException> {
 
     @Override
     public Response toResponse(final ConstraintViolationException exception) {
-        var constraintViolations = exception.getConstraintViolations();
+        var errorDetails = exception.getConstraintViolations()
+                .stream()
+                .map(constraint -> new ErrorDetail(
+                        extractFieldName(constraint.getPropertyPath().toString()),
+                        constraint.getMessage()
+                ))
+                .collect(Collectors.toList());
 
-        var jsonObject = Json.createObjectBuilder();
+        var errorResponse = new ErrorResponse(errorDetails);
 
-        var jsonArray = Json.createArrayBuilder();
+        return Response.status(Response.Status.BAD_REQUEST)
+                .entity(errorResponse)
+                .build();
+    }
 
-        for (var constraint : constraintViolations) {
-            var message = constraint.getMessage();
-            var propertyPath = constraint.getPropertyPath().toString().split("\\.")[2];
-
-            var jsonError = Json.createObjectBuilder()
-                    .add("field", propertyPath)
-                    .add("message", message)
-                    .build();
-            jsonArray.add(jsonError);
-        }
-
-        var errorJsonEntity = jsonObject.add("errors", jsonArray.build()).build();
-
-        return Response.status(Response.Status.BAD_REQUEST).entity(errorJsonEntity).build();
+    private String extractFieldName(String propertyPath) {
+        var parts = propertyPath.split("\\.");
+        return parts.length > 2 ? parts[2] : propertyPath;
     }
 
 }
