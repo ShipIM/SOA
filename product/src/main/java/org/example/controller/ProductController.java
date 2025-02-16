@@ -167,7 +167,8 @@ public class ProductController {
                 .coordinates(mapCoordinatesFromRequest(request.getCoordinates()))
                 .price(request.getPrice())
                 .unitOfMeasure(UnitOfMeasure.valueOf(request.getUnitOfMeasure().value()))
-                .owner(mapPersonFromRequest(request.getOwner()));
+                .owner(mapPersonFromRequest(request.getOwner()))
+                .creationDate(request.getCreationDate().toGregorianCalendar().toZonedDateTime().withZoneSameInstant(ZoneId.of("UTC")));
 
         return product.build();
     }
