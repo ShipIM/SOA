@@ -1,7 +1,10 @@
 package org.example.repository;
 
+import jakarta.annotation.PostConstruct;
 import org.example.api.repository.CoordinatesRepository;
 import org.example.model.entity.Coordinates;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,19 +12,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 
+@Repository
 public class CoordinatesRepositoryImpl implements CoordinatesRepository {
 
-    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/SOA";
-    private static final String JDBC_USER = "postgres";
-    private static final String JDBC_PASSWORD = "postgres";
+    @Value("${spring.db.url}")
+    private String jdbcUrl;
 
-    private final Connection connection;
+    @Value("${spring.db.username}")
+    private String jdbcUser;
 
-    public CoordinatesRepositoryImpl() {
+    @Value("${spring.db.password}")
+    private String jdbcPassword;
+
+    private Connection connection;
+
+    @PostConstruct
+    public void init() {
         try {
             Class.forName("org.postgresql.Driver");
 
-            this.connection = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+            this.connection = DriverManager.getConnection(jdbcUrl, jdbcUser, jdbcPassword);
         } catch (SQLException e) {
             throw new RuntimeException("Failed to establish database connection", e);
         } catch (ClassNotFoundException e) {

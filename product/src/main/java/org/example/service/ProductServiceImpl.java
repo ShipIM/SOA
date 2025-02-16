@@ -11,9 +11,8 @@ import org.example.exception.NotFoundException;
 import org.example.model.entity.Meta;
 import org.example.model.entity.Product;
 import org.example.model.enumeration.UnitOfMeasure;
-import org.example.repository.CoordinatesRepositoryImpl;
-import org.example.repository.PersonRepositoryImpl;
-import org.example.repository.ProductRepositoryImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.sql.SQLException;
 import java.time.ZoneOffset;
@@ -21,18 +20,20 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
+@Service
 public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
-
     private final PersonRepository personRepository;
-
     private final CoordinatesRepository coordinatesRepository;
 
-    public ProductServiceImpl() {
-        this.productRepository = new ProductRepositoryImpl();
-        this.personRepository = new PersonRepositoryImpl();
-        this.coordinatesRepository = new CoordinatesRepositoryImpl();
+    @Autowired
+    public ProductServiceImpl(ProductRepository productRepository,
+                              PersonRepository personRepository,
+                              CoordinatesRepository coordinatesRepository) {
+        this.productRepository = productRepository;
+        this.personRepository = personRepository;
+        this.coordinatesRepository = coordinatesRepository;
     }
 
     @Override

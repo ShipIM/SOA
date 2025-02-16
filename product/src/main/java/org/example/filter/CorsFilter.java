@@ -1,43 +1,36 @@
 package org.example.filter;
 
-import jakarta.ws.rs.container.*;
-import jakarta.ws.rs.core.Response;
-import jakarta.ws.rs.ext.Provider;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpFilter;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
 
-@Provider
-@PreMatching
-public class CorsFilter implements ContainerRequestFilter, ContainerResponseFilter {
+import java.io.IOException;
+
+@Component
+public class CorsFilter extends HttpFilter {
 
     @Override
-    public void filter(ContainerRequestContext request) {
+    public void doFilter(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
 
         if (isPreflightRequest(request)) {
-            request.abortWith(Response.ok().build());
-        }
-    }
-
-    private static boolean isPreflightRequest(ContainerRequestContext request) {
-        return request.getHeaderString("Origin") != null
-                && request.getMethod().equalsIgnoreCase("OPTIONS");
-    }
-
-    @Override
-    public void filter(ContainerRequestContext request, ContainerResponseContext response) {
-
-        if (request.getHeaderString("Origin") == null) {
+            response.setStatus(HttpServletResponse.SC_OK);
             return;
         }
 
-        if (isPreflightRequest(request)) {
-            response.getHeaders().add("Access-Control-Allow-Credentials", "true");
-            response.getHeaders().add("Access-Control-Allow-Methods",
-                    "GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD");
-            response.getHeaders().add("Access-Control-Allow-Headers",
-                    "X-Requested-With, Authorization, " +
-                            "Accept-Version, Content-MD5, CSRF-Token, Content-Type");
-        }
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, PATCH, OPTIONS, HEAD");
+        response.setHeader("Access-Control-Allow-Headers", "X-Requested-With, Authorization, Accept-Version, Content-MD5, CSRF-Token, Content-Type");
 
-        response.getHeaders().add("Access-Control-Allow-Origin", "*");
+        chain.doFilter(request, response);
     }
 
+    private boolean isPreflightRequest(HttpServletRequest request) {
+        return request.getHeader("Origin") != null
+                && request.getMethod().equalsIgnoreCase("OPTIONS");
+    }
 }

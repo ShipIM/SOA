@@ -1,7 +1,13 @@
 package org.example;
 
-import jakarta.ws.rs.core.Application;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-public class App extends Application {
+@SpringBootApplication
+public class App {
+
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
 
 }

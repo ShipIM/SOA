@@ -1,24 +1,7 @@
 package org.example.controller;
 
-import jakarta.jws.WebMethod;
-import jakarta.jws.WebParam;
-import jakarta.jws.WebService;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
+import jakarta.xml.bind.JAXBElement;
 import org.example.api.service.ProductService;
-import org.example.dto.coordinates.CoordinatesResponse;
-import org.example.dto.coordinates.CreateCoordinatesRequest;
-import org.example.dto.coordinates.UpdateCoordinatesRequest;
-import org.example.dto.meta.MetaResponse;
-import org.example.dto.meta.PaginationRequest;
-import org.example.dto.person.CreatePersonRequest;
-import org.example.dto.person.PersonResponse;
-import org.example.dto.person.UpdatePersonRequest;
-import org.example.dto.product.CreateProductRequest;
-import org.example.dto.product.ProductListResponse;
-import org.example.dto.product.ProductResponse;
-import org.example.dto.product.UpdateProductRequest;
 import org.example.model.entity.Coordinates;
 import org.example.model.entity.Meta;
 import org.example.model.entity.Person;
@@ -26,38 +9,53 @@ import org.example.model.entity.Product;
 import org.example.model.enumeration.Color;
 import org.example.model.enumeration.Country;
 import org.example.model.enumeration.UnitOfMeasure;
-import org.example.service.ProductServiceImpl;
+import org.example.product.*;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.ws.server.endpoint.annotation.Endpoint;
+import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
+import org.springframework.ws.server.endpoint.annotation.RequestPayload;
+import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
 
+import javax.xml.namespace.QName;
+import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@WebService
+@Endpoint
 public class ProductController {
+
+    private static final String NAMESPACE_URI = "http://example.org/product";
 
     private final ProductService productService;
 
-    public ProductController() {
-        this.productService = new ProductServiceImpl();
+    @Autowired
+    public ProductController(ProductService productService) {
+        this.productService = productService;
     }
 
-    @WebMethod
-    public ProductResponse addProduct(@WebParam(name = "productRequest") @Valid CreateProductRequest request) {
-        var product = mapProductFromRequest(request);
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "CreateProductRequest")
+    @ResponsePayload
+    public JAXBElement<ProductResponse> addProduct(@RequestPayload JAXBElement<CreateProductRequest> request) {
+        var product = mapProductFromRequest(request.getValue());
+
         product = productService.add(product);
-        return mapProductToResponse(product);
+
+        var mapped = mapProductToResponse(product);
+
+        return new JAXBElement<>(new QName("ProductResponse"), ProductResponse.class, mapped);
     }
 
-    @WebMethod
-    public ProductListResponse findAll(@WebParam(name = "paginationRequest") @Valid PaginationRequest paginationRequest,
-                                       @WebParam(name = "sort") List<String> sort,
-                                       @WebParam(name = "filter") List<String> filter) {
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetProductsRequest")
+    @ResponsePayload
+    public JAXBElement<ProductListResponse> findAll(@RequestPayload JAXBElement<GetProductsRequest> request) {
         var result = productService.findAll(
-                paginationRequest.getPage(),
-                paginationRequest.getSize(),
-                sort, filter
+                request.getValue().getPage(),
+                request.getValue().getSize(),
+                request.getValue().getSort(),
+                request.getValue().getFilter()
         );
 
         var products = result.getKey().stream()
@@ -65,57 +63,90 @@ public class ProductController {
                 .collect(Collectors.toList());
         var meta = mapMetaToResponse(result.getValue());
 
-        return new ProductListResponse(products, meta);
+        var mapped = mapProductListResponse(products, meta);
+
+        return new JAXBElement<>(new QName("ProductListResponse"), ProductListResponse.class, mapped);
     }
 
-    @WebMethod
-    public ProductResponse getProduct(@WebParam(name = "productId") @NotNull Long id) {
-        var product = productService.getById(id);
-        return mapProductToResponse(product);
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetProductRequest")
+    @ResponsePayload
+    public JAXBElement<ProductResponse> getProduct(@RequestPayload JAXBElement<GetProductRequest> request) {
+        var product = productService.getById(request.getValue().getId());
+
+        var mapped = mapProductToResponse(product);
+
+        return new JAXBElement<>(new QName("ProductResponse"), ProductResponse.class, mapped);
     }
 
-    @WebMethod
-    public void updateProduct(@WebParam(name = "productId") @NotNull Long id,
-                              @WebParam(name = "productRequest") @Valid @NotNull UpdateProductRequest request) {
-        var product = mapProductFromRequest(request);
-        product.setId(id);
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "UpdateProductRequest")
+    @ResponsePayload
+    public void updateProduct(@RequestPayload JAXBElement<UpdateProductRequest> request) {
+        var product = mapProductFromRequest(request.getValue());
+        product.setId(request.getValue().getId());
+
         productService.update(product);
     }
 
-    @WebMethod
-    public void deleteProduct(@WebParam(name = "productId") @NotNull Long id) {
-        productService.delete(id);
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "DeleteProductRequest")
+    @ResponsePayload
+    public void deleteProduct(@RequestPayload JAXBElement<DeleteProductRequest> request) {
+        productService.delete(request.getValue().getId());
     }
 
-    @WebMethod
-    public List<UnitOfMeasure> getUniqueMeasurements() {
-        return productService.getUniqueUnitOfMeasure();
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetUniqueMeasurementsRequest")
+    @ResponsePayload
+    public JAXBElement<UniqueMeasurementsResponse> getUniqueMeasurements(@RequestPayload JAXBElement<GetUniqueMeasurementsRequest> request) {
+        var uniqueMeasurements = productService.getUniqueUnitOfMeasure();
+
+        var mapped = mapUniqueMeasurementsResponse(uniqueMeasurements);
+
+        return new JAXBElement<>(new QName("UniqueMeasurementsResponse"), UniqueMeasurementsResponse.class, mapped);
     }
 
-    @WebMethod
-    public List<Color> getColors() {
-        return List.of(Color.values());
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetColorsRequest")
+    @ResponsePayload
+    public JAXBElement<ColorsResponse> getColors(@RequestPayload JAXBElement<GetColorsRequest> request) {
+        var colors = List.of(Color.values());
+
+        var mapped = mapColorsResponse(colors);
+
+        return new JAXBElement<>(new QName("ColorsResponse"), ColorsResponse.class, mapped);
     }
 
-    @WebMethod
-    public List<Country> getCountries() {
-        return List.of(Country.values());
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetCountriesRequest")
+    @ResponsePayload
+    public JAXBElement<CountriesResponse> getCountries(@RequestPayload JAXBElement<GetCountriesRequest> request) {
+        var countries = List.of(Country.values());
+
+        var mapped = mapCountriesResponse(countries);
+
+        return new JAXBElement<>(new QName("CountriesResponse"), CountriesResponse.class, mapped);
     }
 
-    @WebMethod
-    public List<UnitOfMeasure> getMeasures() {
-        return List.of(UnitOfMeasure.values());
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetMeasuresRequest")
+    @ResponsePayload
+    public JAXBElement<MeasuresResponse> getMeasures(@RequestPayload JAXBElement<GetMeasuresRequest> request) {
+        var measures = List.of(UnitOfMeasure.values());
+
+        var mapped = mapMeasuresResponse(measures);
+
+        return new JAXBElement<>(new QName("MeasuresResponse"), MeasuresResponse.class, mapped);
     }
 
-    @WebMethod
-    public void deleteProductsByPrice(@WebParam(name = "productPrice") @Positive Integer price) {
-        productService.deleteByPrice(price);
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "DeleteProductsByPriceRequest")
+    @ResponsePayload
+    public void deleteProductsByPrice(@RequestPayload JAXBElement<DeleteProductsByPriceRequest> request) {
+        productService.deleteByPrice(request.getValue().getPrice());
     }
 
-    @WebMethod
-    public ProductResponse getEarliestProduct() {
+    @PayloadRoot(namespace = NAMESPACE_URI, localPart = "GetEarliestProductRequest")
+    @ResponsePayload
+    public JAXBElement<ProductResponse> getEarliestProduct(@RequestPayload JAXBElement<GetEarliestProductRequest> request) {
         var product = productService.getMinCreationDate();
-        return mapProductToResponse(product);
+
+        var mapped = mapProductToResponse(product);
+
+        return new JAXBElement<>(new QName("ProductResponse"), ProductResponse.class, mapped);
     }
 
     private Product mapProductFromRequest(CreateProductRequest request) {
@@ -123,7 +154,7 @@ public class ProductController {
                 .productName(request.getName())
                 .coordinates(mapCoordinatesFromRequest(request.getCoordinates()))
                 .price(request.getPrice())
-                .unitOfMeasure(request.getUnitOfMeasure())
+                .unitOfMeasure(UnitOfMeasure.valueOf(request.getUnitOfMeasure().value()))
                 .owner(mapPersonFromRequest(request.getOwner()));
 
         return product.build();
@@ -134,7 +165,7 @@ public class ProductController {
                 .productName(request.getName())
                 .coordinates(mapCoordinatesFromRequest(request.getCoordinates()))
                 .price(request.getPrice())
-                .unitOfMeasure(request.getUnitOfMeasure())
+                .unitOfMeasure(UnitOfMeasure.valueOf(request.getUnitOfMeasure().value()))
                 .owner(mapPersonFromRequest(request.getOwner()));
 
         return product.build();
@@ -169,12 +200,16 @@ public class ProductController {
             return null;
         }
 
+        var year = request.getBirthday().getYear();
+        var month = request.getBirthday().getMonth();
+        var day = request.getBirthday().getDay();
+
         var person = Person.builder()
                 .personName(request.getName())
-                .birthday(request.getBirthday())
+                .birthday(LocalDate.of(year, month, day))
                 .height(request.getHeight())
-                .eyeColor(request.getEyeColor())
-                .nationality(request.getNationality());
+                .eyeColor(Color.valueOf(request.getEyeColor().value()))
+                .nationality(Country.valueOf(request.getNationality().value()));
 
         return person.build();
     }
@@ -184,34 +219,44 @@ public class ProductController {
             return null;
         }
 
+        var year = request.getBirthday().getYear();
+        var month = request.getBirthday().getMonth();
+        var day = request.getBirthday().getDay();
+
         var person = Person.builder()
                 .personName(request.getName())
-                .birthday(request.getBirthday())
+                .birthday(LocalDate.of(year, month, day))
                 .height(request.getHeight())
-                .eyeColor(request.getEyeColor())
-                .nationality(request.getNationality());
+                .eyeColor(Color.valueOf(request.getEyeColor().value()))
+                .nationality(Country.valueOf(request.getNationality().value()));
 
         return person.build();
     }
 
     private ProductResponse mapProductToResponse(Product product) {
-        return new ProductResponse(
-                product.getId(),
-                product.getProductName(),
-                mapCoordinatesToResponse(product.getCoordinates()),
-                DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:m:ss.SSSXXX").withZone(ZoneId.from(ZoneOffset.UTC)).
-                        format(product.getCreationDate().toInstant().atZone(ZoneOffset.UTC)),
-                product.getPrice(),
-                product.getUnitOfMeasure(),
-                mapPersonToResponse(product.getOwner())
-        );
+        var response = new ProductResponse();
+        response.setId(product.getId());
+        response.setName(product.getProductName());
+        response.setCoordinates(mapCoordinatesToResponse(product.getCoordinates()));
+        response.setCreationDate(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:m:ss.SSSXXX").withZone(ZoneId.from(ZoneOffset.UTC)).
+                format(product.getCreationDate().toInstant().atZone(ZoneOffset.UTC)));
+        response.setPrice(product.getPrice());
+        response.setUnitOfMeasure(org.example.product.UnitOfMeasure.valueOf(product.getUnitOfMeasure().name()));
+        response.setOwner(mapPersonToResponse(product.getOwner()));
+
+        return response;
     }
 
     private CoordinatesResponse mapCoordinatesToResponse(Coordinates coordinates) {
-        return new CoordinatesResponse(
-                coordinates.getX(),
-                coordinates.getY()
-        );
+        if (coordinates == null) {
+            return null;
+        }
+
+        var response = new CoordinatesResponse();
+        response.setX(coordinates.getX());
+        response.setY(coordinates.getY());
+
+        return response;
     }
 
     private PersonResponse mapPersonToResponse(Person person) {
@@ -219,22 +264,73 @@ public class ProductController {
             return null;
         }
 
-        return new PersonResponse(
-                person.getPersonName(),
-                person.getBirthday().format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-                person.getHeight(),
-                person.getEyeColor(),
-                person.getNationality()
-        );
+        var response = new PersonResponse();
+        response.setName(person.getPersonName());
+        response.setBirthday(DateTimeFormatter.ofPattern("yyyy-MM-dd").
+                format(person.getBirthday()));
+        response.setHeight(person.getHeight());
+        response.setEyeColor(org.example.product.Color.valueOf(person.getEyeColor().name()));
+        response.setNationality(org.example.product.Country.valueOf(person.getNationality().name()));
+
+        return response;
     }
 
     private MetaResponse mapMetaToResponse(Meta meta) {
-        return new MetaResponse(
-                meta.getCurrentPage(),
-                meta.getTotalPages(),
-                meta.getPageSize(),
-                meta.getTotalItems()
-        );
+        var response = new MetaResponse();
+        response.setCurrentPage(meta.getCurrentPage());
+        response.setTotalPages(meta.getTotalPages());
+        response.setPageSize(meta.getPageSize());
+        response.setTotalItems(meta.getTotalItems());
+
+        return response;
+    }
+
+    private ProductListResponse mapProductListResponse(List<ProductResponse> products, MetaResponse meta) {
+        var response = new ProductListResponse();
+        response.setMeta(meta);
+        response.getData().addAll(products);
+
+        return response;
+    }
+
+    private UniqueMeasurementsResponse mapUniqueMeasurementsResponse(List<UnitOfMeasure> measurements) {
+        var response = new UniqueMeasurementsResponse();
+        var mapped = measurements.stream()
+                .map(x -> org.example.product.UnitOfMeasure.valueOf(x.name()))
+                .collect(Collectors.toList());
+        response.getUnitOfMeasure().addAll(mapped);
+
+        return response;
+    }
+
+    private ColorsResponse mapColorsResponse(List<Color> colors) {
+        var response = new ColorsResponse();
+        var mapped = colors.stream()
+                .map(x -> org.example.product.Color.valueOf(x.name()))
+                .collect(Collectors.toList());
+        response.getColor().addAll(mapped);
+
+        return response;
+    }
+
+    private MeasuresResponse mapMeasuresResponse(List<UnitOfMeasure> measures) {
+        var response = new MeasuresResponse();
+        var mapped = measures.stream()
+                .map(x -> org.example.product.UnitOfMeasure.valueOf(x.name()))
+                .collect(Collectors.toList());
+        response.getMeasure().addAll(mapped);
+
+        return response;
+    }
+
+    private CountriesResponse mapCountriesResponse(List<Country> measures) {
+        var response = new CountriesResponse();
+        var mapped = measures.stream()
+                .map(x -> org.example.product.Country.valueOf(x.name()))
+                .collect(Collectors.toList());
+        response.getCountry().addAll(mapped);
+
+        return response;
     }
 
 }

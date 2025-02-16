@@ -1,0 +1,13 @@
+server:
+  port: 8443
+  ssl:
+    key-store: classpath:keystore.jks
+    key-store-password: 123456
+    key-store-type: JKS
+    key-alias: wildfly
+
+spring:
+  db:
+    url: jdbc:postgresql://localhost:5432/homework
+    username: postgres
+    password: postgres
