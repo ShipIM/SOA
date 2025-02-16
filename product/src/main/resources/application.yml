@@ -8,6 +8,6 @@ server:
 
 spring:
   db:
-    url: jdbc:postgresql://localhost:5432/homework
+    url: jdbc:postgresql://localhost:5432/SOA
     username: postgres
     password: postgres

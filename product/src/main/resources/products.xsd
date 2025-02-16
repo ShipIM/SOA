@@ -54,6 +54,7 @@
             <xs:element name="price" type="xs:int"/>
             <xs:element name="unit_of_measure" type="tns:UnitOfMeasure" minOccurs="0"/>
             <xs:element name="owner" type="tns:CreatePersonRequest" minOccurs="0"/>
+            <xs:element name="creation_date" type="xs:dateTime" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -125,6 +126,7 @@
             <xs:element name="price" type="xs:int" minOccurs="0"/>
             <xs:element name="unit_of_measure" type="tns:UnitOfMeasure" minOccurs="0"/>
             <xs:element name="owner" type="tns:UpdatePersonRequest" minOccurs="0"/>
+            <xs:element name="creation_date" type="xs:dateTime" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 
