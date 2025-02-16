@@ -11,26 +11,29 @@ import org.example.exception.NotFoundException;
 import org.example.model.entity.Meta;
 import org.example.model.entity.Product;
 import org.example.model.enumeration.UnitOfMeasure;
+import org.example.repository.CoordinatesRepositoryImpl;
+import org.example.repository.PersonRepositoryImpl;
+import org.example.repository.ProductRepositoryImpl;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.inject.Inject;
 import java.sql.SQLException;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.List;
 
-@ApplicationScoped
 public class ProductServiceImpl implements ProductService {
 
-    @Inject
-    private ProductRepository productRepository;
+    private final ProductRepository productRepository;
 
-    @Inject
-    private PersonRepository personRepository;
+    private final PersonRepository personRepository;
 
-    @Inject
-    private CoordinatesRepository coordinatesRepository;
+    private final CoordinatesRepository coordinatesRepository;
+
+    public ProductServiceImpl() {
+        this.productRepository = new ProductRepositoryImpl();
+        this.personRepository = new PersonRepositoryImpl();
+        this.coordinatesRepository = new CoordinatesRepositoryImpl();
+    }
 
     @Override
     public Product add(Product product) {

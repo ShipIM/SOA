@@ -1,31 +1,43 @@
 package org.example.repository;
 
-import jakarta.annotation.Resource;
 import org.example.api.repository.PersonRepository;
 import org.example.model.entity.Person;
 import org.example.model.enumeration.Color;
 import org.example.model.enumeration.Country;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.sql.DataSource;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-@ApplicationScoped
 public class PersonRepositoryImpl implements PersonRepository {
 
-    @Resource(lookup = "java:/jdbc/datasource")
-    private DataSource dataSource;
+    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/SOA";
+    private static final String JDBC_USER = "postgres";
+    private static final String JDBC_PASSWORD = "postgres";
+
+    private final Connection connection;
+
+    public PersonRepositoryImpl() {
+        try {
+            Class.forName("org.postgresql.Driver");
+
+            this.connection = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to establish database connection", e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public Person create(Person person) throws SQLException {
         var sql = "INSERT INTO person (person_name, birthday, height, eye_color, nationality) " +
                 "VALUES (?, ?, ?, ?, ?) RETURNING id";
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
+        try (var statement = connection.prepareStatement(sql)) {
             statement.setString(1, person.getPersonName());
             statement.setDate(2, person.getBirthday() != null ? Date.valueOf(person.getBirthday()) : null);
             statement.setDouble(3, person.getHeight());
@@ -48,8 +60,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     public Optional<Person> getById(Long id) throws SQLException {
         var sql = "SELECT * FROM person WHERE id = ?";
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
+        try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
 
             try (var resultSet = statement.executeQuery()) {
@@ -104,8 +115,7 @@ public class PersonRepositoryImpl implements PersonRepository {
         sql.append(" WHERE id = ?");
         params.add(person.getId());
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql.toString())) {
+        try (var statement = connection.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < params.size(); i++) {
                 statement.setObject(i + 1, params.get(i));
@@ -119,8 +129,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     public void delete(Long id) throws SQLException {
         var sql = "DELETE FROM person WHERE id = ?";
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
+        try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
 
             statement.executeUpdate();

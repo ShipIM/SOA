@@ -1,27 +1,39 @@
 package org.example.repository;
 
-import jakarta.annotation.Resource;
 import org.example.api.repository.CoordinatesRepository;
 import org.example.model.entity.Coordinates;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Optional;
 
-@ApplicationScoped
 public class CoordinatesRepositoryImpl implements CoordinatesRepository {
 
-    @Resource(lookup = "java:/jdbc/datasource")
-    private DataSource dataSource;
+    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/SOA";
+    private static final String JDBC_USER = "postgres";
+    private static final String JDBC_PASSWORD = "postgres";
+
+    private final Connection connection;
+
+    public CoordinatesRepositoryImpl() {
+        try {
+            Class.forName("org.postgresql.Driver");
+
+            this.connection = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to establish database connection", e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public Coordinates create(Coordinates coordinates) throws SQLException {
         var sql = "INSERT INTO coordinates (x, y) VALUES (?, ?) RETURNING id";
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
+        try (var statement = connection.prepareStatement(sql)) {
 
             statement.setDouble(1, coordinates.getX());
             statement.setInt(2, coordinates.getY());
@@ -42,8 +54,7 @@ public class CoordinatesRepositoryImpl implements CoordinatesRepository {
     public Optional<Coordinates> getById(Long id) throws SQLException {
         var sql = "SELECT * FROM coordinates WHERE id = ?";
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
+        try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
 
             try (var resultSet = statement.executeQuery()) {
@@ -82,8 +93,7 @@ public class CoordinatesRepositoryImpl implements CoordinatesRepository {
         sql.append(" WHERE id = ?");
         params.add(coordinates.getId());
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql.toString())) {
+        try (var statement = connection.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < params.size(); i++) {
                 statement.setObject(i + 1, params.get(i));
@@ -97,8 +107,7 @@ public class CoordinatesRepositoryImpl implements CoordinatesRepository {
     public void delete(Long id) throws SQLException {
         var sql = "DELETE FROM coordinates WHERE id = ?";
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
+        try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
 
             statement.executeUpdate();

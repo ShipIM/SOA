@@ -1,14 +1,13 @@
 package org.example.repository;
 
-import jakarta.annotation.Resource;
 import org.example.api.repository.ProductRepository;
 import org.example.model.entity.Coordinates;
 import org.example.model.entity.Person;
 import org.example.model.entity.Product;
 import org.example.model.enumeration.UnitOfMeasure;
 
-import javax.enterprise.context.ApplicationScoped;
-import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.ZoneId;
@@ -19,11 +18,25 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-@ApplicationScoped
 public class ProductRepositoryImpl implements ProductRepository {
 
-    @Resource(lookup = "java:/jdbc/datasource")
-    private DataSource dataSource;
+    private static final String JDBC_URL = "jdbc:postgresql://localhost:5432/SOA";
+    private static final String JDBC_USER = "postgres";
+    private static final String JDBC_PASSWORD = "postgres";
+
+    private final Connection connection;
+
+    public ProductRepositoryImpl() {
+        try {
+            Class.forName("org.postgresql.Driver");
+
+            this.connection = DriverManager.getConnection(JDBC_URL, JDBC_USER, JDBC_PASSWORD);
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to establish database connection", e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public Product create(Product product) throws SQLException {
@@ -32,8 +45,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
         product.setCreationDate(ZonedDateTime.now(ZoneOffset.UTC));
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
+        try (var statement = connection.prepareStatement(sql)) {
             statement.setString(1, product.getProductName());
             statement.setLong(2, product.getCoordinates().getId());
             statement.setTimestamp(3, Timestamp.valueOf(product.getCreationDate().toLocalDateTime()));
@@ -96,8 +108,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             sql.append(" LIMIT ? OFFSET ?");
         }
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql.toString())) {
+        try (var statement = connection.prepareStatement(sql.toString())) {
 
             if (size != 0 && page != 0) {
                 statement.setInt(1, size);
@@ -158,8 +169,7 @@ public class ProductRepositoryImpl implements ProductRepository {
             }
         }
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql.toString())) {
+        try (var statement = connection.prepareStatement(sql.toString())) {
 
             try (var resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -286,8 +296,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Optional<Product> getById(Long id) throws SQLException {
         var sql = "SELECT * FROM product WHERE id = ?";
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
+        try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
             try (var resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
@@ -353,8 +362,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         sql.append(" WHERE id = ?");
         params.add(product.getId());
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql.toString())) {
+        try (var statement = connection.prepareStatement(sql.toString())) {
 
             for (int i = 0; i < params.size(); i++) {
                 statement.setObject(i + 1, params.get(i));
@@ -368,8 +376,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public void delete(Long id) throws SQLException {
         var sql = "DELETE FROM product WHERE id = ?";
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
+        try (var statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
 
             statement.executeUpdate();
@@ -380,8 +387,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public void deleteByPrice(Integer price) throws SQLException {
         var sql = "DELETE FROM product WHERE price = ?";
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
+        try (var statement = connection.prepareStatement(sql)) {
             statement.setDouble(1, price);
 
             statement.executeUpdate();
@@ -392,8 +398,7 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Optional<Product> getMinCreationDate() throws SQLException {
         var sql = "SELECT * FROM product ORDER BY creation_date LIMIT 1";
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql);
+        try (var statement = connection.prepareStatement(sql);
              var resultSet = statement.executeQuery()) {
             if (resultSet.next()) {
                 var coordinates = Coordinates.builder()
@@ -424,8 +429,7 @@ public class ProductRepositoryImpl implements ProductRepository {
         var sql = "SELECT DISTINCT unit_of_measure FROM product";
         var unitOfMeasures = new ArrayList<UnitOfMeasure>();
 
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql);
+        try (var statement = connection.prepareStatement(sql);
              var resultSet = statement.executeQuery()) {
             while (resultSet.next()) {
                 if (resultSet.getString("unit_of_measure") != null) {

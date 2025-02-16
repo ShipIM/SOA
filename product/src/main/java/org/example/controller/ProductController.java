@@ -1,7 +1,7 @@
 package org.example.controller;
 
-import jakarta.inject.Inject;
 import jakarta.jws.WebMethod;
+import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
@@ -26,6 +26,7 @@ import org.example.model.entity.Product;
 import org.example.model.enumeration.Color;
 import org.example.model.enumeration.Country;
 import org.example.model.enumeration.UnitOfMeasure;
+import org.example.service.ProductServiceImpl;
 
 import java.time.ZoneId;
 import java.time.ZoneOffset;
@@ -36,18 +37,23 @@ import java.util.stream.Collectors;
 @WebService
 public class ProductController {
 
-    @Inject
-    private ProductService productService;
+    private final ProductService productService;
+
+    public ProductController() {
+        this.productService = new ProductServiceImpl();
+    }
 
     @WebMethod
-    public ProductResponse addProduct(@Valid CreateProductRequest request) {
+    public ProductResponse addProduct(@WebParam(name = "productRequest") @Valid CreateProductRequest request) {
         var product = mapProductFromRequest(request);
         product = productService.add(product);
         return mapProductToResponse(product);
     }
 
     @WebMethod
-    public ProductListResponse findAll(@Valid PaginationRequest paginationRequest, List<String> sort, List<String> filter) {
+    public ProductListResponse findAll(@WebParam(name = "paginationRequest") @Valid PaginationRequest paginationRequest,
+                                       @WebParam(name = "sort") List<String> sort,
+                                       @WebParam(name = "filter") List<String> filter) {
         var result = productService.findAll(
                 paginationRequest.getPage(),
                 paginationRequest.getSize(),
@@ -63,20 +69,21 @@ public class ProductController {
     }
 
     @WebMethod
-    public ProductResponse getProduct(@NotNull Long id) {
+    public ProductResponse getProduct(@WebParam(name = "productId") @NotNull Long id) {
         var product = productService.getById(id);
         return mapProductToResponse(product);
     }
 
     @WebMethod
-    public void updateProduct(@NotNull Long id, @Valid @NotNull UpdateProductRequest request) {
+    public void updateProduct(@WebParam(name = "productId") @NotNull Long id,
+                              @WebParam(name = "productRequest") @Valid @NotNull UpdateProductRequest request) {
         var product = mapProductFromRequest(request);
         product.setId(id);
         productService.update(product);
     }
 
     @WebMethod
-    public void deleteProduct(@NotNull Long id) {
+    public void deleteProduct(@WebParam(name = "productId") @NotNull Long id) {
         productService.delete(id);
     }
 
@@ -101,7 +108,7 @@ public class ProductController {
     }
 
     @WebMethod
-    public void deleteProductsByPrice(@Positive Integer price) {
+    public void deleteProductsByPrice(@WebParam(name = "productPrice") @Positive Integer price) {
         productService.deleteByPrice(price);
     }
 
