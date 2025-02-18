@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @Endpoint
 public class ProductController {
 
-    private static final String NAMESPACE_URI = "https://example.org/products";
+    private static final String NAMESPACE_URI = "http://example.org/products";
 
     private final ProductService productService;
 
@@ -143,8 +143,7 @@ public class ProductController {
                 .coordinates(mapCoordinatesFromRequest(request.getCoordinates()))
                 .price(request.getPrice())
                 .unitOfMeasure(UnitOfMeasure.valueOf(request.getUnitOfMeasure().value()))
-                .owner(mapPersonFromRequest(request.getOwner()))
-                .creationDate(request.getCreationDate().toGregorianCalendar().toZonedDateTime().withZoneSameInstant(ZoneId.of("UTC")));
+                .owner(mapPersonFromRequest(request.getOwner()));
 
         return product.build();
     }
@@ -155,17 +154,12 @@ public class ProductController {
                 .coordinates(mapCoordinatesFromRequest(request.getCoordinates()))
                 .price(request.getPrice())
                 .unitOfMeasure(UnitOfMeasure.valueOf(request.getUnitOfMeasure().value()))
-                .owner(mapPersonFromRequest(request.getOwner()))
-                .creationDate(request.getCreationDate().toGregorianCalendar().toZonedDateTime().withZoneSameInstant(ZoneId.of("UTC")));
+                .owner(mapPersonFromRequest(request.getOwner()));
 
         return product.build();
     }
 
     private Coordinates mapCoordinatesFromRequest(CreateCoordinatesRequest request) {
-        if (request == null) {
-            return null;
-        }
-
         var coordinates = Coordinates.builder()
                 .x(request.getX())
                 .y(request.getY());
@@ -174,10 +168,6 @@ public class ProductController {
     }
 
     private Coordinates mapCoordinatesFromRequest(UpdateCoordinatesRequest request) {
-        if (request == null) {
-            return null;
-        }
-
         var coordinates = Coordinates.builder()
                 .x(request.getX())
                 .y(request.getY());

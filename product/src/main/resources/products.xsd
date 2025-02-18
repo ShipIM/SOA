@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="https://example.org/products"
-           targetNamespace="https://example.org/products" elementFormDefault="qualified">
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://example.org/products"
+           targetNamespace="http://example.org/products" elementFormDefault="qualified">
 
     <xs:simpleType name="unitOfMeasure">
         <xs:restriction base="xs:string">
@@ -53,7 +53,6 @@
                 <xs:element name="price" type="xs:int"/>
                 <xs:element name="unit_of_measure" type="tns:unitOfMeasure" minOccurs="0"/>
                 <xs:element name="owner" type="tns:createPersonRequest" minOccurs="0"/>
-                <xs:element name="creation_date" type="xs:dateTime" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -161,7 +160,6 @@
                 <xs:element name="price" type="xs:int" minOccurs="0"/>
                 <xs:element name="unit_of_measure" type="tns:unitOfMeasure" minOccurs="0"/>
                 <xs:element name="owner" type="tns:updatePersonRequest" minOccurs="0"/>
-                <xs:element name="creation_date" type="xs:dateTime" minOccurs="0"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
