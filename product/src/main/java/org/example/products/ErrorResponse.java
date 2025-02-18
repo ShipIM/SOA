@@ -11,22 +11,21 @@ package org.example.products;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
-import jakarta.xml.bind.annotation.XmlRootElement;
 import jakarta.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for anonymous complex type.
+ * <p>Java class for errorResponse complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType&gt;
+ * &lt;complexType name="errorResponse"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;sequence&gt;
  *         &lt;element name="code" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="body" type="{http://example.org/products}getMeasuresResponseType"/&gt;
+ *         &lt;element name="message" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/sequence&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -36,17 +35,16 @@ import jakarta.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "", propOrder = {
+@XmlType(name = "errorResponse", propOrder = {
     "code",
-    "body"
+    "message"
 })
-@XmlRootElement(name = "getMeasuresResponse")
-public class GetMeasuresResponse {
+public class ErrorResponse {
 
     @XmlElement(required = true)
     protected String code;
     @XmlElement(required = true)
-    protected GetMeasuresResponseType body;
+    protected String message;
 
     /**
      * Gets the value of the code property.
@@ -73,27 +71,27 @@ public class GetMeasuresResponse {
     }
 
     /**
-     * Gets the value of the body property.
+     * Gets the value of the message property.
      * 
      * @return
      *     possible object is
-     *     {@link GetMeasuresResponseType }
+     *     {@link String }
      *     
      */
-    public GetMeasuresResponseType getBody() {
-        return body;
+    public String getMessage() {
+        return message;
     }
 
     /**
-     * Sets the value of the body property.
+     * Sets the value of the message property.
      * 
      * @param value
      *     allowed object is
-     *     {@link GetMeasuresResponseType }
+     *     {@link String }
      *     
      */
-    public void setBody(GetMeasuresResponseType value) {
-        this.body = value;
+    public void setMessage(String value) {
+        this.message = value;
     }
 
 }

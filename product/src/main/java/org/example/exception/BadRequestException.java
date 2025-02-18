@@ -1,14 +1,18 @@
 package org.example.exception;
 
-import org.example.api.exception.ApiException;
-import org.springframework.ws.soap.server.endpoint.annotation.FaultCode;
-import org.springframework.ws.soap.server.endpoint.annotation.SoapFault;
+import lombok.Getter;
+import lombok.Setter;
 
-@SoapFault(faultCode = FaultCode.CLIENT, faultStringOrReason = "Bad Request")
-public class BadRequestException extends ApiException {
+@Getter
+@Setter
+public class BadRequestException extends RuntimeException {
+
+    private final int statusCode;
 
     public BadRequestException(String message) {
-        super(400, message);
+        super(message);
+
+        this.statusCode = 400;
     }
 
 }

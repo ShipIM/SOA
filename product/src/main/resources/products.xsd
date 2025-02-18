@@ -60,16 +60,23 @@
     <xs:element name="createProductResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="id" type="xs:long"/>
-                <xs:element name="name" type="xs:string"/>
-                <xs:element name="coordinates" type="tns:coordinatesResponse"/>
-                <xs:element name="creation_date" type="xs:string"/>
-                <xs:element name="price" type="xs:int"/>
-                <xs:element name="unit_of_measure" type="tns:unitOfMeasure" minOccurs="0"/>
-                <xs:element name="owner" type="tns:personResponse" minOccurs="0"/>
+                <xs:element name="code" type="xs:string"/>
+                <xs:element name="body" type="tns:createProductResponseType"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="createProductResponseType">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="coordinates" type="tns:coordinatesResponse"/>
+            <xs:element name="creation_date" type="xs:string"/>
+            <xs:element name="price" type="xs:int"/>
+            <xs:element name="unit_of_measure" type="tns:unitOfMeasure" minOccurs="0"/>
+            <xs:element name="owner" type="tns:personResponse" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="coordinatesResponse">
         <xs:sequence>
@@ -91,11 +98,18 @@
     <xs:element name="getProductsResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="data" type="tns:productResponseType" maxOccurs="unbounded"/>
-                <xs:element name="meta" type="tns:metaResponse"/>
+                <xs:element name="code" type="xs:string"/>
+                <xs:element name="body" type="tns:getProductsResponseType"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="getProductsResponseType">
+        <xs:sequence>
+            <xs:element name="data" type="tns:productResponseType" maxOccurs="unbounded"/>
+            <xs:element name="meta" type="tns:metaResponseType"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:complexType name="productResponseType">
         <xs:sequence>
@@ -109,12 +123,19 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="metaResponse">
+    <xs:complexType name="metaResponseType">
         <xs:sequence>
             <xs:element name="current_page" type="xs:int"/>
             <xs:element name="total_pages" type="xs:int"/>
             <xs:element name="page_size" type="xs:int"/>
             <xs:element name="total_items" type="xs:int"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="errorResponse">
+        <xs:sequence>
+            <xs:element name="code" type="xs:string"/>
+            <xs:element name="message" type="xs:string"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -140,16 +161,23 @@
     <xs:element name="getProductResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="id" type="xs:long"/>
-                <xs:element name="name" type="xs:string"/>
-                <xs:element name="coordinates" type="tns:coordinatesResponse"/>
-                <xs:element name="creation_date" type="xs:string"/>
-                <xs:element name="price" type="xs:int"/>
-                <xs:element name="unit_of_measure" type="tns:unitOfMeasure" minOccurs="0"/>
-                <xs:element name="owner" type="tns:personResponse" minOccurs="0"/>
+                <xs:element name="code" type="xs:string"/>
+                <xs:element name="body" type="tns:getProductResponseType"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="getProductResponseType">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="coordinates" type="tns:coordinatesResponse"/>
+            <xs:element name="creation_date" type="xs:string"/>
+            <xs:element name="price" type="xs:int"/>
+            <xs:element name="unit_of_measure" type="tns:unitOfMeasure" minOccurs="0"/>
+            <xs:element name="owner" type="tns:personResponse" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:element name="updateProductRequest">
         <xs:complexType>
@@ -167,7 +195,7 @@
     <xs:element name="updateProductResponse">
         <xs:complexType>
             <xs:sequence>
-                <!-- No fields since the request is empty -->
+                <xs:element name="code" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -200,7 +228,7 @@
     <xs:element name="deleteProductResponse">
         <xs:complexType>
             <xs:sequence>
-                <!-- No fields since the request is empty -->
+                <xs:element name="code" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -216,7 +244,7 @@
     <xs:element name="deleteProductsByPriceResponse">
         <xs:complexType>
             <xs:sequence>
-                <!-- No fields since the request is empty -->
+                <xs:element name="code" type="xs:string"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
@@ -232,10 +260,17 @@
     <xs:element name="getColorsResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="color" type="tns:color" maxOccurs="unbounded"/>
+                <xs:element name="code" type="xs:string"/>
+                <xs:element name="body" type="tns:getColorsResponseType"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="getColorsResponseType">
+        <xs:sequence>
+            <xs:element name="color" type="tns:color" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:element name="getCountriesRequest">
         <xs:complexType>
@@ -248,10 +283,17 @@
     <xs:element name="getCountriesResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="country" type="tns:country" maxOccurs="unbounded"/>
+                <xs:element name="code" type="xs:string"/>
+                <xs:element name="body" type="tns:getCountriesResponseType"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="getCountriesResponseType">
+        <xs:sequence>
+            <xs:element name="country" type="tns:country" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:element name="getMeasuresRequest">
         <xs:complexType>
@@ -264,10 +306,17 @@
     <xs:element name="getMeasuresResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="measure" type="tns:unitOfMeasure" maxOccurs="unbounded"/>
+                <xs:element name="code" type="xs:string"/>
+                <xs:element name="body" type="tns:getMeasuresResponseType"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="getMeasuresResponseType">
+        <xs:sequence>
+            <xs:element name="measure" type="tns:unitOfMeasure" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:element name="getUniqueMeasurementsRequest">
         <xs:complexType>
@@ -280,10 +329,17 @@
     <xs:element name="getUniqueMeasurementsResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="measure" type="tns:unitOfMeasure" maxOccurs="unbounded"/>
+                <xs:element name="code" type="xs:string"/>
+                <xs:element name="body" type="tns:getUniqueMeasurementsResponseType"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="getUniqueMeasurementsResponseType">
+        <xs:sequence>
+            <xs:element name="measure" type="tns:unitOfMeasure" maxOccurs="unbounded"/>
+        </xs:sequence>
+    </xs:complexType>
 
     <xs:element name="getEarliestProductRequest">
         <xs:complexType>
@@ -296,15 +352,22 @@
     <xs:element name="getEarliestProductResponse">
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="id" type="xs:long"/>
-                <xs:element name="name" type="xs:string"/>
-                <xs:element name="coordinates" type="tns:coordinatesResponse"/>
-                <xs:element name="creation_date" type="xs:string"/>
-                <xs:element name="price" type="xs:int"/>
-                <xs:element name="unit_of_measure" type="tns:unitOfMeasure" minOccurs="0"/>
-                <xs:element name="owner" type="tns:personResponse" minOccurs="0"/>
+                <xs:element name="code" type="xs:string"/>
+                <xs:element name="body" type="tns:getEarliestProductResponseType"/>
             </xs:sequence>
         </xs:complexType>
     </xs:element>
+
+    <xs:complexType name="getEarliestProductResponseType">
+        <xs:sequence>
+            <xs:element name="id" type="xs:long"/>
+            <xs:element name="name" type="xs:string"/>
+            <xs:element name="coordinates" type="tns:coordinatesResponse"/>
+            <xs:element name="creation_date" type="xs:string"/>
+            <xs:element name="price" type="xs:int"/>
+            <xs:element name="unit_of_measure" type="tns:unitOfMeasure" minOccurs="0"/>
+            <xs:element name="owner" type="tns:personResponse" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
 
 </xs:schema>
