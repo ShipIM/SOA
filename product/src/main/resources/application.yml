@@ -1,10 +1,5 @@
 server:
   port: 8443
-  ssl:
-    key-store: classpath:keystore.jks
-    key-store-password: 123456
-    key-store-type: JKS
-    key-alias: wildfly
 
 spring:
   db:

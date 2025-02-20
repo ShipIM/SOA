@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 public class ProductGatewayImpl implements ProductGateway {
 
-    private final String baseUrl = "http://localhost:8080/first-service/api/v1";
+    private final String baseUrl = "https://localhost:8090/api/v1";
 
     @Override
     public Pair<List<Product>, Meta> fetchProducts(List<Pair<String, String>> filters, Integer page, Integer size) {

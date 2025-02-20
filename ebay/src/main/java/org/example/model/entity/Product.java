@@ -20,7 +20,7 @@ public class Product {
 
     private Coordinates coordinates;
 
-    private ZonedDateTime creationDate;
+    private String creationDate;
 
     private Integer price;
 

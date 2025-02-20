@@ -44,7 +44,6 @@ public class ProductController {
         try {
             validateCreateProductRequest(request);
 
-
             var product = mapProductFromRequest(request);
 
             product = productService.add(product);
@@ -77,6 +76,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -126,6 +126,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -165,6 +166,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -174,6 +176,8 @@ public class ProductController {
     @ResponsePayload
     public UpdateProductResponse updateProduct(@RequestPayload UpdateProductRequest request) {
         try {
+            validateUpdateProductRequest(request);
+
             var product = mapProductFromRequest(request);
             product.setId(request.getId());
 
@@ -210,6 +214,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -252,6 +257,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -291,6 +297,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -330,6 +337,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -369,6 +377,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -408,6 +417,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -450,6 +460,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -489,6 +500,7 @@ public class ProductController {
         } catch (Exception e) {
             var errorResponse = new ErrorResponse();
             errorResponse.setCode("500");
+            errorResponse.setMessage(e.getMessage());
 
             throw new APIException("Error", errorResponse);
         }
@@ -499,8 +511,11 @@ public class ProductController {
                 .productName(request.getName())
                 .coordinates(mapCoordinatesFromRequest(request.getCoordinates()))
                 .price(request.getPrice())
-                .unitOfMeasure(UnitOfMeasure.valueOf(request.getUnitOfMeasure().value()))
                 .owner(mapPersonFromRequest(request.getOwner()));
+
+        if (request.getUnitOfMeasure() != null) {
+            product.unitOfMeasure(UnitOfMeasure.valueOf(request.getUnitOfMeasure().value()));
+        }
 
         return product.build();
     }
@@ -510,8 +525,11 @@ public class ProductController {
                 .productName(request.getName())
                 .coordinates(mapCoordinatesFromRequest(request.getCoordinates()))
                 .price(request.getPrice())
-                .unitOfMeasure(UnitOfMeasure.valueOf(request.getUnitOfMeasure().value()))
                 .owner(mapPersonFromRequest(request.getOwner()));
+
+        if (request.getUnitOfMeasure() != null) {
+            product.unitOfMeasure(UnitOfMeasure.valueOf(request.getUnitOfMeasure().value()));
+        }
 
         return product.build();
     }
@@ -537,16 +555,20 @@ public class ProductController {
             return null;
         }
 
-        var year = request.getBirthday().getYear();
-        var month = request.getBirthday().getMonth();
-        var day = request.getBirthday().getDay();
-
         var person = Person.builder()
                 .personName(request.getName())
-                .birthday(LocalDate.of(year, month, day))
                 .height(request.getHeight())
                 .eyeColor(Color.valueOf(request.getEyeColor().value()))
                 .nationality(Country.valueOf(request.getNationality().value()));
+
+        if (request.getBirthday() != null) {
+            var year = request.getBirthday().getYear();
+            var month = request.getBirthday().getMonth();
+            var day = request.getBirthday().getDay();
+
+            person.birthday(LocalDate.of(year, month, day));
+        }
+
 
         return person.build();
     }
@@ -556,16 +578,19 @@ public class ProductController {
             return null;
         }
 
-        var year = request.getBirthday().getYear();
-        var month = request.getBirthday().getMonth();
-        var day = request.getBirthday().getDay();
-
         var person = Person.builder()
                 .personName(request.getName())
-                .birthday(LocalDate.of(year, month, day))
                 .height(request.getHeight())
                 .eyeColor(Color.valueOf(request.getEyeColor().value()))
                 .nationality(Country.valueOf(request.getNationality().value()));
+
+        if (request.getBirthday() != null) {
+            var year = request.getBirthday().getYear();
+            var month = request.getBirthday().getMonth();
+            var day = request.getBirthday().getDay();
+
+            person.birthday(LocalDate.of(year, month, day));
+        }
 
         return person.build();
     }
@@ -625,8 +650,10 @@ public class ProductController {
 
         var response = new PersonResponse();
         response.setName(person.getPersonName());
-        response.setBirthday(DateTimeFormatter.ofPattern("yyyy-MM-dd").
-                format(person.getBirthday()));
+        if (person.getBirthday() != null) {
+            response.setBirthday(DateTimeFormatter.ofPattern("yyyy-MM-dd").
+                    format(person.getBirthday()));
+        }
         response.setHeight(person.getHeight());
         response.setEyeColor(org.example.products.Color.valueOf(person.getEyeColor().name()));
         response.setNationality(org.example.products.Country.valueOf(person.getNationality().name()));
@@ -636,10 +663,10 @@ public class ProductController {
 
     private MetaResponseType mapMetaToResponse(Meta meta) {
         var response = new MetaResponseType();
-        response.setCurrentPage(meta.getCurrentPage());
-        response.setTotalPages(meta.getTotalPages());
-        response.setPageSize(meta.getPageSize());
-        response.setTotalItems(meta.getTotalItems());
+        response.setCurrentPage(meta.getCurrentPage() == null ? 0 : meta.getCurrentPage());
+        response.setTotalPages(meta.getTotalPages() == null ? 0 : meta.getTotalPages());
+        response.setPageSize(meta.getPageSize() == null ? 0 : meta.getPageSize());
+        response.setTotalItems(meta.getTotalItems() == null ? 0 : meta.getTotalItems());
 
         return response;
     }
@@ -786,6 +813,10 @@ public class ProductController {
         }
         validateCreateCoordinatesRequest(request.getCoordinates());
 
+        if (request.getUnitOfMeasure() == null) {
+            throw new IllegalArgumentException("Product unit of measure cannot be null or illegal value");
+        }
+
         if (request.getPrice() <= 0) {
             throw new IllegalArgumentException("Price must be greater than 0");
         }
@@ -823,11 +854,11 @@ public class ProductController {
         }
 
         if (person.getEyeColor() == null) {
-            throw new IllegalArgumentException("Person eye color cannot be null");
+            throw new IllegalArgumentException("Person eye color cannot be null or illegal value");
         }
 
         if (person.getNationality() == null) {
-            throw new IllegalArgumentException("Person nationality cannot be null");
+            throw new IllegalArgumentException("Person nationality cannot be null or illegal value");
         }
     }
 
@@ -844,6 +875,10 @@ public class ProductController {
             throw new IllegalArgumentException("Coordinates cannot be null");
         }
         validateUpdateCoordinatesRequest(request.getCoordinates());
+
+        if (request.getUnitOfMeasure() == null) {
+            throw new IllegalArgumentException("Product unit of measure cannot be null or illegal value");
+        }
 
         if (request.getPrice() <= 0) {
             throw new IllegalArgumentException("Price must be greater than 0");
@@ -882,11 +917,11 @@ public class ProductController {
         }
 
         if (person.getEyeColor() == null) {
-            throw new IllegalArgumentException("Person eye color cannot be null");
+            throw new IllegalArgumentException("Person eye color cannot be null or illegal value");
         }
 
         if (person.getNationality() == null) {
-            throw new IllegalArgumentException("Person nationality cannot be null");
+            throw new IllegalArgumentException("Person nationality cannot be null or illegal value");
         }
     }
 

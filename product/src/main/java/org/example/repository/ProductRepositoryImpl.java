@@ -161,7 +161,7 @@ public class ProductRepositoryImpl implements ProductRepository {
 
     @Override
     public Integer countAll(List<String> filter) throws SQLException {
-        var sql = new StringBuilder("SELECT p.* " +
+        var sql = new StringBuilder("SELECT COUNT(p.*) " +
                 "FROM product p " +
                 "JOIN coordinates c ON p.coordinates_id = c.id " +
                 "LEFT JOIN person pe ON p.owner_id = pe.id " +
@@ -180,7 +180,6 @@ public class ProductRepositoryImpl implements ProductRepository {
         }
 
         try (var statement = connection.prepareStatement(sql.toString())) {
-
             try (var resultSet = statement.executeQuery()) {
                 if (resultSet.next()) {
                     return resultSet.getInt(1);
