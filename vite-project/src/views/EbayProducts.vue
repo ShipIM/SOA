@@ -134,7 +134,7 @@ export default {
           this.errorMessage = '';
           if (error.response) {
             this.errorMessage = error.response.data.errors
-              .map(e => `${e.field}: ${e.message}`).join(', ');
+                .map(e => e.field ? `${e.field}: ${e.message}` : e.message).join(', ');
           }
         });
     },
@@ -162,7 +162,7 @@ export default {
         .catch(error => {
           if (error.response) {
             this.errorMessage = error.response.data.errors
-              .map(e => `${e.field}: ${e.message}`).join(', ');
+                .map(e => e.field ? `${e.field}: ${e.message}` : e.message).join(', ');
           } else {
             this.errorMessage = 'Server Error';
           }
@@ -183,7 +183,7 @@ export default {
           })
           .catch(error => {
             this.errorMessage = error.response ?
-              error.response.data.errors.map(e => `${e.field}: ${e.message}`).join(', ') : 'Server Error';
+              error.response.data.errors.map(e => e.field ? `${e.field}: ${e.message}` : e.message).join(', ') : 'Server Error';
           });
       }
     }

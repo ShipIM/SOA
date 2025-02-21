@@ -33,7 +33,7 @@
           .catch(error => {
             if (error.response) {
               this.errorMessage = error.response.data.errors
-                .map(e => `${e.field}: ${e.message}`).join(', ');
+                  .map(e => e.field ? `${e.field}: ${e.message}` : e.message).join(', ');
             } else {
               this.errorMessage = 'Server Error';
             }

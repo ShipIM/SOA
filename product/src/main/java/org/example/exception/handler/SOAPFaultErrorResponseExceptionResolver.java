@@ -10,6 +10,7 @@ public class SOAPFaultErrorResponseExceptionResolver extends SoapFaultMappingExc
 
     private static final QName CODE = new QName("code");
     private static final QName MESSAGE = new QName("message");
+    private static final QName FIELD = new QName("field");
 
     @Override
     protected void customizeFault(Object endpoint, Exception ex, SoapFault fault) {
@@ -17,8 +18,9 @@ public class SOAPFaultErrorResponseExceptionResolver extends SoapFaultMappingExc
             var errorResponse = ((APIException) ex).getErrorResponse();
             var detail = fault.addFaultDetail();
 
-            detail.addFaultDetailElement(CODE).addText(errorResponse.getCode());
-            detail.addFaultDetailElement(MESSAGE).addText(errorResponse.getMessage());
+            detail.addFaultDetailElement(CODE).addText(errorResponse.getCode() == null ? "" : errorResponse.getCode());
+            detail.addFaultDetailElement(MESSAGE).addText(errorResponse.getMessage() == null ? "" : errorResponse.getMessage());
+            detail.addFaultDetailElement(FIELD).addText(errorResponse.getField() == null ? "" : errorResponse.getField());
         }
     }
 

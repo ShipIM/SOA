@@ -85,7 +85,7 @@ public class ProductServiceImpl implements ProductService {
         } catch (SQLException e) {
             throw new InternalServerErrorException("something went wrong on retrieving products: " + e.getMessage());
         } catch (IllegalArgumentException e) {
-            throw new BadRequestException(e.getMessage());
+            throw new BadRequestException(e.getMessage()); // TODO: how it was before??
         }
     }
 
