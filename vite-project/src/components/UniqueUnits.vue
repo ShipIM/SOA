@@ -25,7 +25,7 @@
     },
     methods: {
       fetchUniqueUnits() {
-        axios.get('https://localhost:8080/first-service/api/v1/products/measurements/unique')
+        axios.get('https://localhost:8090/api/v1/products/measurements/unique')
           .then(response => {
             this.uniqueUnits = response.data;
             this.errorMessage = '';

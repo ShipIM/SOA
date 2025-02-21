@@ -37,7 +37,7 @@
     },
     methods: {
       fetchProduct() {
-        axios.get(`https://localhost:8080/first-service/api/v1/products/dates/min`)
+        axios.get(`https://localhost:8090/api/v1/products/dates/min`)
           .then(response => {
             this.product = response.data;
             this.errorMessage = '';
